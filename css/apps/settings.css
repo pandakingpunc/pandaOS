@@ -1,0 +1,1462 @@
+/* PandaOS — Ayarlar (Settings). Everything is scoped under .app-settings (the window body).
+   Layout: .st-shell = [ .st-nav | .st-scroll > .st-content > .st-page ]. Sizes that depend on the window
+   width use container queries on .st-shell so the app is responsive from 640 px up to maximised. */
+
+.app-settings {
+  --st-surface: var(--bg-sunken);
+  --st-card: var(--bg-elev);
+  --st-card-hover: var(--bg-elev-2);
+  --st-card-border: var(--border);
+  --st-radius: 10px;
+  background: var(--st-surface);
+  color: var(--text);
+  font-size: 14px;
+}
+
+[data-theme="light"] .app-settings {
+  --st-card: var(--bg);
+  --st-card-hover: var(--bg-elev);
+}
+
+.app-settings [hidden] {
+  display: none !important;
+}
+
+.app-settings .st-shell {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  container: stshell / inline-size;
+}
+
+/* ================================================================ navigation */
+.app-settings .st-nav {
+  width: 252px;
+  gap: 14px;
+  padding: 16px 12px 12px;
+  background: transparent;
+  border-right: 1px solid var(--border);
+}
+
+.app-settings .st-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 6px 0;
+}
+
+.app-settings .st-avatar {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+.app-settings .st-user-text {
+  min-width: 0;
+}
+
+.app-settings .st-user-name {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-settings .st-user-sub {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+
+.app-settings .st-search {
+  position: relative;
+  flex: none;
+}
+
+.app-settings .st-search-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 30px 0 32px;
+  border-radius: 8px;
+}
+
+.app-settings .st-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  display: flex;
+  margin-top: -8px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.app-settings .st-search-input:focus ~ .st-search-clear,
+.app-settings .st-search-clear:focus-visible {
+  opacity: 1;
+}
+
+.app-settings .st-search-clear {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  padding: 0;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: default;
+}
+
+.app-settings .st-search-clear:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.app-settings .st-navlist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
+  overflow: visible;
+}
+
+.app-settings .st-nav-item {
+  min-height: 40px;
+  padding: 0 12px;
+  gap: 12px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.app-settings .st-nav-item .p-icon {
+  color: var(--text-muted);
+  transition: color var(--dur-fast) ease;
+}
+
+.app-settings .st-nav-item.selected {
+  font-weight: 600;
+}
+
+.app-settings .st-nav-item.selected .p-icon {
+  color: var(--accent-text);
+}
+
+.app-settings .st-nav-item:focus-visible {
+  outline-offset: -2px;
+}
+
+.app-settings .st-nav-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ================================================================ content area */
+.app-settings .st-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: auto;
+}
+
+.app-settings .st-page {
+  box-sizing: border-box;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 24px 32px 40px;
+}
+
+.app-settings .st-page.st-enter {
+  animation: st-in 320ms var(--ease-out) backwards;
+}
+
+@keyframes st-in {
+  from {
+    opacity: .4;
+    transform: translateY(10px);
+  }
+}
+
+.app-settings .st-title {
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+.app-settings .st-section {
+  margin-top: 24px;
+}
+
+.app-settings .st-section-title {
+  margin: 0 0 8px 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.app-settings .st-note {
+  margin: 14px 4px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ================================================================ rows and groups */
+.app-settings .st-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-settings .st-row.p-card {
+  padding: 0;
+  background: var(--st-card);
+  border-color: var(--st-card-border);
+  border-radius: 4px;
+  box-shadow: none;
+  scroll-margin-top: 16px;
+}
+
+.app-settings .st-group > .st-row:first-child,
+.app-settings .st-group > .st-row:first-child.p-card {
+  border-top-left-radius: var(--st-radius);
+  border-top-right-radius: var(--st-radius);
+}
+
+.app-settings .st-group > .st-row:last-child,
+.app-settings .st-group > .st-row:last-child.p-card {
+  border-bottom-left-radius: var(--st-radius);
+  border-bottom-right-radius: var(--st-radius);
+}
+
+.app-settings .st-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-height: 64px;
+  padding: 12px 16px;
+}
+
+.app-settings .st-row-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border-radius: 9px;
+  transition: background-color var(--dur) ease, color var(--dur) ease;
+}
+
+.app-settings .st-row-text {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.app-settings .st-row-title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.app-settings .st-row-desc {
+  margin-top: 1px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.app-settings .st-row-ctl {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 10px;
+  margin-left: auto;
+  max-width: 100%;
+}
+
+.app-settings .st-row.st-stack .st-row-body {
+  padding: 2px 16px 18px;
+}
+
+.app-settings .st-row.st-stack .st-row-head {
+  min-height: 0;
+  padding-bottom: 12px;
+}
+
+.app-settings .st-val {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  text-align: right;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-settings .st-row.st-warn .st-row-desc {
+  color: color-mix(in srgb, var(--warning) 42%, var(--text));
+}
+
+.app-settings .st-row.st-flash,
+.app-settings .st-wp-hero.st-flash {
+  animation: st-flash 1.6s var(--ease) 1;
+}
+
+@keyframes st-flash {
+  0%, 100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  20%, 60% {
+    box-shadow: 0 0 0 3px var(--accent), 0 0 24px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+}
+
+.app-settings .st-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-active);
+  border-radius: 11px;
+  white-space: nowrap;
+}
+
+/* ================================================================ search results */
+.app-settings .st-result-count {
+  margin: -12px 0 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.app-settings .st-result.p-card {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-settings .st-result:hover {
+  background: var(--st-card-hover);
+}
+
+.app-settings .st-result:active {
+  background: var(--bg-active);
+}
+
+.app-settings .st-result:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-settings .st-result .st-row-head {
+  min-height: 58px;
+}
+
+.app-settings .st-result .st-row-ctl {
+  color: var(--text-muted);
+}
+
+.app-settings mark {
+  padding: 0 1px;
+  color: inherit;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--accent) 32%, transparent);
+  border-radius: 3px;
+}
+
+.app-settings .st-empty {
+  min-height: 240px;
+  background: var(--st-card);
+  border: 1px solid var(--st-card-border);
+  border-radius: var(--st-radius);
+}
+
+/* ================================================================ Kişiselleştirme */
+.app-settings .st-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.app-settings .st-theme {
+  -webkit-appearance: none;
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  cursor: default;
+}
+
+.app-settings .st-mock {
+  --m-r: 10px;
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  container-type: inline-size;
+  border-radius: var(--m-r);
+  box-shadow: 0 0 0 1px var(--border-strong);
+  transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.app-settings .st-theme:hover .st-mock {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--text-faint), 0 6px 16px rgba(0, 0, 0, .25);
+}
+
+.app-settings .st-theme.selected .st-mock {
+  box-shadow: 0 0 0 2px var(--st-card), 0 0 0 4px var(--accent);
+}
+
+.app-settings .st-theme:focus-visible {
+  outline: none;
+}
+
+.app-settings .st-theme:focus-visible .st-mock {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+
+.app-settings .st-theme-name {
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.app-settings .st-theme.selected .st-theme-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* a miniature wallpaper: laid out at a reference desktop size and scaled down by JS (see mini() in settings.js) */
+.app-settings .st-mini {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.app-settings .st-mini-in {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 1440px;
+  height: 900px;
+  transform-origin: 0 0;
+}
+
+.app-settings .st-mock-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.app-settings .st-mock-layer.clip-l {
+  clip-path: inset(0 50% 0 0);
+}
+
+.app-settings .st-mock-layer.clip-r {
+  clip-path: inset(0 0 0 50%);
+}
+
+.app-settings .st-mock-layer.is-dark {
+  --m-win: #262930;
+  --m-bar: #343842;
+  --m-line: rgba(255, 255, 255, .26);
+  --m-line-strong: rgba(255, 255, 255, .5);
+  --m-task: rgba(22, 24, 30, .88);
+  --m-dot: rgba(255, 255, 255, .72);
+}
+
+.app-settings .st-mock-layer.is-light {
+  --m-win: #ffffff;
+  --m-bar: #e9ebf0;
+  --m-line: rgba(0, 0, 0, .14);
+  --m-line-strong: rgba(0, 0, 0, .36);
+  --m-task: rgba(244, 245, 248, .9);
+  --m-dot: rgba(0, 0, 0, .42);
+}
+
+.app-settings .st-mock-win {
+  position: absolute;
+  left: 15%;
+  top: 13%;
+  width: 70%;
+  height: 58%;
+  overflow: hidden;
+  background: var(--m-win);
+  border-radius: 3cqw;
+  box-shadow: 0 1.4cqw 4cqw rgba(0, 0, 0, .38);
+}
+
+.app-settings .st-mock-tb {
+  display: flex;
+  align-items: center;
+  gap: 1.6cqw;
+  height: 7.5cqw;
+  padding-left: 2.6cqw;
+  background: var(--m-bar);
+}
+
+.app-settings .st-mock-tb span {
+  width: 2cqw;
+  height: 2cqw;
+  border-radius: 50%;
+  background: var(--m-line-strong);
+}
+
+.app-settings .st-mock-body {
+  display: grid;
+  gap: 2.6cqw;
+  padding: 4cqw;
+}
+
+.app-settings .st-mock-h,
+.app-settings .st-mock-l {
+  display: block;
+  height: 2.2cqw;
+  border-radius: 1cqw;
+  background: var(--m-line);
+}
+
+.app-settings .st-mock-h {
+  width: 42%;
+  height: 3cqw;
+  background: var(--m-line-strong);
+}
+
+.app-settings .st-mock-l.short {
+  width: 62%;
+}
+
+.app-settings .st-mock-acc {
+  display: block;
+  width: 24%;
+  height: 5.2cqw;
+  margin-top: .8cqw;
+  border-radius: 1.4cqw;
+  background: var(--accent);
+}
+
+.app-settings .st-mock-task {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.6cqw;
+  height: 11cqw;
+  background: var(--m-task);
+}
+
+.app-settings .st-mock-task span {
+  width: 4.6cqw;
+  height: 4.6cqw;
+  border-radius: 1.3cqw;
+  background: var(--m-dot);
+}
+
+.app-settings .st-mock-task span.start {
+  background: var(--accent);
+}
+
+/* the "selected" tick shared by theme cards and wallpaper thumbnails */
+.app-settings .st-check {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .4), 0 0 0 2px rgba(255, 255, 255, .85);
+  opacity: 0;
+  transform: scale(.5);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease-out);
+}
+
+.app-settings .selected > .st-mock > .st-check,
+.app-settings .selected > .st-wp-img > .st-check {
+  opacity: 1;
+  transform: none;
+}
+
+.app-settings .st-accent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-settings .st-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.app-settings .st-swatch {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  color: var(--on, #fff);
+  background: var(--sw, var(--accent));
+  border: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18), 0 1px 3px rgba(0, 0, 0, .25);
+  cursor: default;
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease);
+}
+
+.app-settings .st-swatch > .p-icon {
+  opacity: 0;
+  transform: scale(.5);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease-out);
+}
+
+.app-settings .st-swatch:hover {
+  transform: scale(1.1);
+}
+
+.app-settings .st-swatch:active {
+  transform: scale(.95);
+}
+
+.app-settings .st-swatch.selected {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18), 0 0 0 2px var(--st-card), 0 0 0 4px var(--text);
+}
+
+.app-settings .st-swatch.selected > .p-icon {
+  opacity: 1;
+  transform: none;
+}
+
+.app-settings .st-swatch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.app-settings .st-swatch-custom {
+  background:
+    conic-gradient(from 0deg, #ef5a4c, #f08c1a, #f5d90a, #30a46c, #0ea5a4, #3b82f6, #8b5cf6, #e0498f, #ef5a4c);
+  color: #fff;
+  overflow: hidden;
+}
+
+.app-settings .st-swatch-custom::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--st-card);
+  transition: background-color var(--dur) ease, inset var(--dur) var(--ease);
+}
+
+.app-settings .st-swatch-custom .st-custom-glyph,
+.app-settings .st-swatch-custom .st-custom-check {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.app-settings .st-swatch-custom .st-custom-glyph {
+  color: var(--text);
+}
+
+.app-settings .st-swatch-custom .st-custom-check {
+  color: var(--on);
+  opacity: 0;
+}
+
+.app-settings .st-swatch-custom.selected {
+  overflow: visible;
+  background: var(--sw);
+}
+
+.app-settings .st-swatch-custom.selected::before {
+  background: var(--sw);
+  inset: 0;
+}
+
+.app-settings .st-swatch-custom.selected .st-custom-glyph {
+  opacity: 0;
+}
+
+.app-settings .st-swatch-custom.selected .st-custom-check {
+  opacity: 1;
+}
+
+.app-settings .st-swatch-custom:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.app-settings .st-color-input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: default;
+}
+
+.app-settings .st-hex {
+  width: 92px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: lowercase;
+}
+
+.app-settings .st-accent-name {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ================================================================ Duvar kağıdı */
+.app-settings .st-wp-hero.p-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px 24px;
+  padding: 16px;
+  scroll-margin-top: 16px;
+}
+
+.app-settings .st-wp-preview {
+  position: relative;
+  flex: 1 1 260px;
+  max-width: 340px;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  container-type: inline-size;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--border-strong), 0 8px 24px rgba(0, 0, 0, .28);
+}
+
+.app-settings .st-wp-icons {
+  position: absolute;
+  left: 2.6cqw;
+  top: 3cqw;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4cqw;
+}
+
+.app-settings .st-wp-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .3cqw;
+  width: 10cqw;
+}
+
+.app-settings .st-wp-icon span:last-child {
+  font-size: 1.9cqw;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+}
+
+.app-settings .st-wp-win {
+  position: absolute;
+  left: 30%;
+  top: 14%;
+  width: 55%;
+  height: 56%;
+  overflow: hidden;
+  background: var(--bg);
+  border-radius: 2.2cqw;
+  box-shadow: 0 0 0 1px var(--border), 0 1.6cqw 4.5cqw rgba(0, 0, 0, .45);
+}
+
+.app-settings .st-wp-tb {
+  display: flex;
+  align-items: center;
+  gap: 1.3cqw;
+  height: 5.8cqw;
+  padding-left: 2cqw;
+  background: var(--titlebar-bg);
+}
+
+.app-settings .st-wp-tb span {
+  width: 1.5cqw;
+  height: 1.5cqw;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+
+.app-settings .st-wp-body {
+  display: grid;
+  gap: 2cqw;
+  padding: 3cqw;
+}
+
+.app-settings .st-wp-body .h,
+.app-settings .st-wp-body .l {
+  display: block;
+  height: 1.7cqw;
+  border-radius: .8cqw;
+  background: var(--border-strong);
+}
+
+.app-settings .st-wp-body .h {
+  width: 40%;
+  height: 2.4cqw;
+  background: var(--text-faint);
+}
+
+.app-settings .st-wp-body .l.short {
+  width: 60%;
+}
+
+.app-settings .st-wp-body .acc {
+  display: block;
+  width: 22%;
+  height: 4cqw;
+  margin-top: .6cqw;
+  border-radius: 1.1cqw;
+  background: var(--accent);
+}
+
+.app-settings .st-wp-task {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 8.6cqw;
+  background: var(--surface-glass-strong);
+  border-top: 1px solid var(--border);
+  color: var(--text);
+}
+
+.app-settings .st-wp-apps {
+  display: flex;
+  align-items: center;
+  gap: 1.8cqw;
+}
+
+.app-settings .st-wp-clock {
+  position: absolute;
+  right: 2.2cqw;
+  top: 50%;
+  font-size: 2.3cqw;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-50%);
+}
+
+.app-settings .st-wp-info {
+  flex: 1 1 200px;
+  min-width: 0;
+  scroll-margin-top: 16px;
+}
+
+.app-settings .st-wp-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.app-settings .st-wp-name {
+  margin-top: 2px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.app-settings .st-wp-kind {
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.app-settings .st-wp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.app-settings .st-wp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+  gap: 18px 16px;
+  padding: 6px 4px 4px;
+}
+
+.app-settings .st-wp {
+  -webkit-appearance: none;
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: default;
+}
+
+.app-settings .st-wp-img {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-sunken);
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px var(--border-strong);
+  transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease-out);
+}
+
+.app-settings .st-wp:hover .st-wp-img {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--text-faint), 0 8px 18px rgba(0, 0, 0, .3);
+}
+
+.app-settings .st-wp.selected .st-wp-img {
+  box-shadow: 0 0 0 2px var(--st-surface), 0 0 0 4px var(--accent);
+}
+
+.app-settings .st-wp:focus-visible {
+  outline: none;
+}
+
+.app-settings .st-wp:focus-visible .st-wp-img {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+
+.app-settings .st-wp-cap {
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.3;
+  color: var(--text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-settings .st-wp.selected .st-wp-cap {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ================================================================ Ses */
+.app-settings .st-vol {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 240px;
+  max-width: 100%;
+}
+
+.app-settings .st-vol .p-range {
+  flex: 1 1 auto;
+  min-width: 0;
+  transition: opacity var(--dur) ease;
+}
+
+.app-settings .st-vol-val {
+  flex: none;
+  min-width: 44px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-settings .st-row.st-off .st-vol .p-range {
+  opacity: .5;
+}
+
+.app-settings .st-row.st-off .st-vol-val {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.app-settings .st-eq {
+  display: none;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+}
+
+.app-settings .st-row.playing .st-eq {
+  display: inline-flex;
+}
+
+.app-settings .st-eq i {
+  width: 3px;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transform-origin: bottom;
+  animation: st-eq 560ms ease-in-out infinite;
+}
+
+.app-settings .st-eq i:nth-child(2) { animation-delay: -140ms; }
+.app-settings .st-eq i:nth-child(3) { animation-delay: -280ms; }
+.app-settings .st-eq i:nth-child(4) { animation-delay: -420ms; }
+
+@keyframes st-eq {
+  0%, 100% { transform: scaleY(.3); }
+  50% { transform: scaleY(1); }
+}
+
+/* ================================================================ Bildirimler */
+.app-settings .st-notif-list.p-card {
+  padding: 4px 0;
+  background: var(--st-card);
+  border-color: var(--st-card-border);
+  border-radius: var(--st-radius);
+  box-shadow: none;
+}
+
+.app-settings .st-notif-list .st-empty {
+  min-height: 180px;
+  background: transparent;
+  border: 0;
+}
+
+.app-settings .st-notif {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+}
+
+.app-settings .st-notif + .st-notif {
+  border-top: 1px solid var(--border);
+}
+
+.app-settings .st-notif-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+}
+
+.app-settings .st-notif-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-settings .st-notif-title {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-settings .st-notif.unread .st-notif-title::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 8px;
+  vertical-align: middle;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.app-settings .st-notif-msg {
+  overflow: hidden;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-settings .st-notif-time {
+  flex: none;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.app-settings .st-notif-more {
+  padding: 8px 16px 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+/* ================================================================ Tarih ve saat */
+.app-settings .st-clock-card.p-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 32px;
+  padding: 24px;
+  border-radius: var(--st-radius);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 62%),
+    var(--st-card);
+  border-color: var(--st-card-border);
+  box-shadow: none;
+}
+
+.app-settings .st-bigclock {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-settings .st-bigdate {
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.app-settings .st-clock-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.app-settings .st-clock-side-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.app-settings .st-tray {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1px;
+  min-width: 96px;
+  padding: 6px 14px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+}
+
+.app-settings .st-tray-time {
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.app-settings .st-tray-date {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ================================================================ Depolama */
+.app-settings .st-bar {
+  display: flex;
+  height: 14px;
+  margin: 2px 0 14px;
+  overflow: hidden;
+  background: var(--bg-active);
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.app-settings .st-seg {
+  display: block;
+  height: 100%;
+  box-shadow: inset -2px 0 0 var(--st-card);
+  transition: flex-basis 400ms var(--ease-out);
+}
+
+.app-settings .st-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0 -8px;
+}
+
+.app-settings .st-leg {
+  -webkit-appearance: none;
+  appearance: none;
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto 84px 52px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 8px;
+  margin: 0;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-settings button.st-leg:hover {
+  background: var(--bg-hover);
+}
+
+.app-settings button.st-leg:active {
+  background: var(--bg-active);
+}
+
+.app-settings button.st-leg:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-settings .st-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.app-settings .st-leg.free .st-dot {
+  background: var(--bg-active);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+.app-settings .st-leg-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-settings .st-leg-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.app-settings .st-leg-size,
+.app-settings .st-leg-pct {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-settings .st-leg-pct {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.app-settings .st-warn-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warning) 45%, transparent);
+  border-radius: 8px;
+}
+
+/* ================================================================ Hakkında */
+.app-settings .st-about-hero.p-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px 28px;
+  padding: 24px;
+  border-radius: var(--st-radius);
+  background:
+    radial-gradient(circle at 12% 30%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 55%),
+    var(--st-card);
+  border-color: var(--st-card-border);
+  box-shadow: none;
+}
+
+.app-settings .st-about-logo {
+  flex: none;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .35));
+}
+
+.app-settings .st-about-text {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.app-settings .st-about-name {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+.app-settings .st-about-sub {
+  margin-top: 4px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.app-settings .st-about-actions {
+  margin-top: 16px;
+}
+
+.app-settings .st-kv .st-row-head {
+  min-height: 52px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.app-settings .st-kv .st-val {
+  max-width: 340px;
+}
+
+/* white text on the stock danger red is only ~3.9:1; deepen the fill inside this app so labels reach AA */
+.app-settings .p-btn.danger {
+  background: color-mix(in srgb, var(--danger) 84%, black);
+  border-color: color-mix(in srgb, var(--danger) 66%, black);
+}
+
+.app-settings .p-btn.danger:hover {
+  background: color-mix(in srgb, var(--danger) 91%, black);
+}
+
+.app-settings .p-btn.danger:active {
+  background: color-mix(in srgb, var(--danger) 74%, black);
+}
+
+.app-settings .st-danger-row .st-row-icon {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 16%, transparent);
+}
+
+/* ================================================================ responsive (window width) */
+@container stshell (max-width: 760px) {
+  .app-settings .st-nav {
+    width: 204px;
+    padding: 12px 8px 8px;
+  }
+
+  .app-settings .st-page {
+    padding: 18px 20px 32px;
+  }
+
+  .app-settings .st-title {
+    margin-bottom: 16px;
+    font-size: 24px;
+  }
+
+  .app-settings .st-user-name {
+    font-size: 14px;
+  }
+
+  .app-settings .st-nav-item {
+    min-height: 38px;
+    padding: 0 10px;
+    gap: 10px;
+  }
+
+  .app-settings .st-row-head {
+    padding: 10px 12px;
+  }
+
+  .app-settings .st-row.st-stack .st-row-body {
+    padding: 2px 12px 14px;
+  }
+
+  .app-settings .st-theme-grid {
+    gap: 10px;
+  }
+
+  .app-settings .st-bigclock {
+    font-size: 42px;
+  }
+
+  .app-settings .st-clock-card.p-card,
+  .app-settings .st-about-hero.p-card {
+    padding: 18px;
+  }
+}
+
+@container stshell (max-width: 680px) {
+  .app-settings .st-leg {
+    grid-template-columns: 12px minmax(0, 1fr) 84px 48px;
+    gap: 10px;
+  }
+
+  .app-settings .st-leg-count {
+    display: none;
+  }
+
+  .app-settings .st-wp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 14px 12px;
+  }
+
+  .app-settings .st-clock-side {
+    align-items: flex-start;
+  }
+}

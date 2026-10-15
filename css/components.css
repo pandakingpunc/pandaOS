@@ -1,0 +1,1015 @@
+/* PandaOS shared UI components (C4).
+   Fluent / Windows 11 inspired, compact (32px controls). Everything is built from the
+   theme variables in theme.css so dark, light and the accent color work automatically. */
+
+:root {
+  /* decorative constants that must not follow the text color */
+  --ctl-thumb: #eceef3;
+  --ctl-thumb-ring: rgba(0, 0, 0, .28);
+  --seg-active: var(--bg-elev-2);
+
+  /* --accent-solid* / --on-accent (accent fills that carry text) live in theme.css and are refined by
+     PandaOS.theme.apply(). Keep --accent itself for rings, sliders, indicator pills and anything without text. */
+  /* the accent used AS text colour (search highlight, text buttons, links): lifted on dark glass, deepened on light glass */
+  --accent-text: color-mix(in srgb, var(--accent) 72%, white);
+}
+
+[data-theme="light"] {
+  --ctl-thumb: #ffffff;
+  --ctl-thumb-ring: rgba(0, 0, 0, .22);
+  --seg-active: var(--bg);
+  --accent-text: color-mix(in srgb, var(--accent) 60%, var(--text));
+}
+
+/* ---------------------------------------------------------------- icon wrapper */
+.p-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+/* ---------------------------------------------------------------- buttons */
+.p-btn {
+  --_h: 32px;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: var(--_h);
+  min-width: 32px;
+  padding: 0 14px;
+  margin: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  text-decoration: none;
+  flex: none;
+  transition: background-color var(--dur-fast) ease, border-color var(--dur-fast) ease,
+    color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+
+.p-btn:hover {
+  background: color-mix(in srgb, var(--text) 11%, transparent);
+}
+
+.p-btn:active {
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  color: var(--text-muted);
+}
+
+.p-btn > svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* focus ring sits outside the fill and follows the button's own color */
+.p-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.p-btn.danger:focus-visible {
+  outline-color: var(--danger);
+}
+
+/* icon-only buttons are quiet until hovered */
+.p-btn.icon {
+  width: 32px;
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
+}
+
+.p-btn.icon:hover {
+  background: var(--bg-hover);
+}
+
+.p-btn.icon:active {
+  background: var(--bg-active);
+}
+
+.p-btn.icon > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.p-btn.ghost {
+  background: transparent;
+  border-color: transparent;
+}
+
+.p-btn.ghost:hover {
+  background: var(--bg-hover);
+}
+
+.p-btn.ghost:active {
+  background: var(--bg-active);
+}
+
+.p-btn.primary {
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  border-color: color-mix(in srgb, var(--accent-solid) 78%, black);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+
+.p-btn.primary:hover {
+  background: var(--accent-solid-hover);
+}
+
+.p-btn.primary:active {
+  background: var(--accent-solid-active);
+  color: color-mix(in srgb, var(--on-accent) 90%, transparent);
+}
+
+.p-btn.danger {
+  color: #fff;
+  background: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 78%, black);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+
+.p-btn.danger:hover {
+  background: var(--danger-hover);
+}
+
+.p-btn.danger:active {
+  background: color-mix(in srgb, var(--danger) 82%, black);
+  color: rgba(255, 255, 255, .8);
+}
+
+/* toggled state (toolbar toggles) */
+.p-btn.active,
+.p-btn[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
+.p-btn.icon.active,
+.p-btn.icon[aria-pressed="true"] {
+  border-color: transparent;
+}
+
+.p-btn.small {
+  --_h: 26px;
+  min-width: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.p-btn.icon.small {
+  width: 26px;
+  padding: 0;
+}
+
+.p-btn.icon.small > svg {
+  width: 16px;
+  height: 16px;
+}
+
+.p-btn:disabled,
+.p-btn[disabled],
+.p-btn.disabled,
+.p-btn[aria-disabled="true"] {
+  opacity: .42;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- text inputs */
+.p-input {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 32px;
+  min-width: 0;
+  margin: 0;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 -1px 0 var(--border);
+  user-select: text;
+  -webkit-user-select: text;
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease,
+    background-color var(--dur-fast) ease;
+}
+
+textarea.p-input {
+  height: auto;
+  min-height: 72px;
+  padding: 7px 10px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.p-input::placeholder {
+  color: var(--text-faint);
+  opacity: 1;
+}
+
+.p-input:hover {
+  border-color: var(--border-strong);
+}
+
+.p-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.p-input.small {
+  height: 26px;
+  padding: 0 8px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.p-input.invalid,
+.p-input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.p-input.invalid:focus,
+.p-input[aria-invalid="true"]:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 22%, transparent);
+}
+
+.p-input:disabled,
+.p-input[disabled] {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.p-input[readonly] {
+  background: var(--bg-sunken);
+}
+
+/* ---------------------------------------------------------------- select */
+.p-select {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 32px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 30px 0 10px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background-color: var(--input-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23a3a9b6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 12px;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 -1px 0 var(--border);
+  cursor: default;
+  text-overflow: ellipsis;
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+
+[data-theme="light"] .p-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%235b6270' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.p-select:hover {
+  border-color: var(--border-strong);
+}
+
+.p-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.p-select option,
+.p-select optgroup {
+  background: var(--bg-elev);
+  color: var(--text);
+}
+
+.p-select[multiple],
+.p-select[size]:not([size="1"]) {
+  height: auto;
+  padding: 4px;
+  background-image: none;
+}
+
+.p-select:disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- range slider */
+@keyframes p-range-init {
+  from { opacity: .999; }
+  to { opacity: 1; }
+}
+
+.p-range {
+  --p: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  vertical-align: middle;
+  cursor: default;
+  /* the animation only exists so the UI kit gets an `animationstart` for new sliders
+     and can sync the --p (fill) variable with the initial value */
+  animation: p-range-init 1ms;
+}
+
+.p-range:focus {
+  outline: none;
+}
+
+.p-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background:
+    linear-gradient(var(--accent), var(--accent)) 0 0 / calc(9px + (100% - 18px) * var(--p)) 100% no-repeat,
+    color-mix(in srgb, var(--text) 22%, transparent);
+}
+
+.p-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--accent) 0 4.5px, var(--ctl-thumb) 5px);
+  box-shadow: 0 0 0 1px var(--ctl-thumb-ring), 0 1px 4px rgba(0, 0, 0, .3);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.p-range:hover::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+.p-range:active::-webkit-slider-thumb {
+  transform: scale(.92);
+}
+
+.p-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px var(--ctl-thumb-ring), 0 0 0 4px var(--accent-soft), 0 1px 4px rgba(0, 0, 0, .3);
+}
+
+.p-range::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--text) 22%, transparent);
+}
+
+.p-range::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.p-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--accent) 0 4.5px, var(--ctl-thumb) 5px);
+  box-shadow: 0 0 0 1px var(--ctl-thumb-ring), 0 1px 4px rgba(0, 0, 0, .3);
+}
+
+.p-range:disabled {
+  opacity: .42;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- switch */
+.p-switch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 40px;
+  height: 20px;
+  vertical-align: middle;
+  cursor: default;
+}
+
+.p-switch > input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.p-switch > span {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--text) 52%, transparent);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  transition: background-color 160ms ease, border-color 160ms ease, opacity 160ms ease;
+}
+
+.p-switch > span::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--text) 72%, transparent);
+  transition: transform 200ms var(--ease-out), background-color 160ms ease;
+}
+
+.p-switch:hover > span::before {
+  transform: scale(1.2);
+}
+
+.p-switch > input:checked + span {
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
+}
+
+.p-switch > input:checked + span::before {
+  background: var(--on-accent);
+  transform: translateX(18px);
+}
+
+.p-switch:hover > input:checked + span::before {
+  transform: translateX(18px) scale(1.2);
+}
+
+.p-switch > input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.p-switch > input:disabled + span {
+  opacity: .42;
+}
+
+.p-switch:has(> input:disabled) {
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- checkbox / radio */
+label.p-checkbox,
+label.p-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+  line-height: 18px;
+}
+
+input.p-checkbox,
+.p-checkbox > input[type="checkbox"],
+input.p-radio,
+.p-radio > input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  flex: none;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  vertical-align: middle;
+  background: var(--input-bg);
+  border: 1px solid color-mix(in srgb, var(--text) 50%, transparent);
+  border-radius: 5px;
+  cursor: default;
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+input.p-radio,
+.p-radio > input[type="radio"] {
+  border-radius: 50%;
+}
+
+input.p-checkbox:hover,
+.p-checkbox > input[type="checkbox"]:hover,
+input.p-radio:hover,
+.p-radio > input[type="radio"]:hover {
+  border-color: color-mix(in srgb, var(--text) 75%, transparent);
+}
+
+input.p-checkbox:checked,
+input.p-checkbox:indeterminate,
+.p-checkbox > input[type="checkbox"]:checked,
+.p-checkbox > input[type="checkbox"]:indeterminate,
+input.p-radio:checked,
+.p-radio > input[type="radio"]:checked {
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
+}
+
+input.p-checkbox::after,
+.p-checkbox > input[type="checkbox"]::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: var(--on-accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.4 6.4 4.9 8.9 9.6 3.4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.4 6.4 4.9 8.9 9.6 3.4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: scale(0);
+  transition: transform 140ms var(--ease-out);
+}
+
+input.p-checkbox:checked::after,
+.p-checkbox > input[type="checkbox"]:checked::after {
+  transform: scale(1);
+}
+
+input.p-checkbox:indeterminate::after,
+.p-checkbox > input[type="checkbox"]:indeterminate::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.8 6h6.4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.8 6h6.4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+  transform: scale(1);
+}
+
+input.p-radio::after,
+.p-radio > input[type="radio"]::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--on-accent);
+  transform: scale(0);
+  transition: transform 140ms var(--ease-out);
+}
+
+input.p-radio:checked::after,
+.p-radio > input[type="radio"]:checked::after {
+  transform: scale(1);
+}
+
+input.p-checkbox:focus-visible,
+.p-checkbox > input:focus-visible,
+input.p-radio:focus-visible,
+.p-radio > input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input.p-checkbox:disabled,
+.p-checkbox > input:disabled,
+input.p-radio:disabled,
+.p-radio > input:disabled {
+  opacity: .42;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- toolbar / statusbar */
+.p-toolbar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 4px;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 6px 8px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.p-toolbar > .spacer,
+.p-toolbar .spacer {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.p-toolbar > .p-divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 6px;
+}
+
+.p-statusbar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 16px;
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-elev);
+  border-top: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.p-statusbar .spacer {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------- sidebar + lists */
+.p-sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  box-sizing: border-box;
+  width: 200px;
+  padding: 8px;
+  overflow: auto;
+  background: var(--bg-elev);
+  border-right: 1px solid var(--border);
+}
+
+.p-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 4px;
+  overflow: auto;
+  list-style: none;
+}
+
+.p-sidebar > .p-list {
+  padding: 0;
+}
+
+.p-list-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 10px;
+  box-sizing: border-box;
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  white-space: nowrap;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.p-list-item > svg,
+.p-list-item > .p-icon {
+  flex: none;
+}
+
+.p-list-item > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.p-list-item:hover {
+  background: var(--bg-hover);
+}
+
+.p-list-item:active {
+  background: var(--bg-active);
+}
+
+.p-list-item.selected {
+  background: var(--accent-soft);
+}
+
+.p-list-item.selected:hover {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.p-sidebar .p-list-item.selected::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* ---------------------------------------------------------------- tabs */
+.p-tabs {
+  display: flex;
+  align-items: stretch;
+  flex: none;
+  gap: 2px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.p-tab {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  height: 36px;
+  margin: 0;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  white-space: nowrap;
+  cursor: default;
+  transition: color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+
+.p-tab:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.p-tab.active {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.p-tab::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 200ms var(--ease-out);
+}
+
+.p-tab.active::after {
+  transform: scaleX(1);
+}
+
+/* ---------------------------------------------------------------- card, badge, kbd, divider */
+.p-card {
+  box-sizing: border-box;
+  padding: 16px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.p-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  border-radius: 9px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.p-badge.subtle {
+  color: var(--text-muted);
+  background: var(--bg-active);
+}
+
+.p-badge.danger {
+  color: #fff;
+  background: var(--danger);
+}
+
+.p-badge.success {
+  color: #fff;
+  background: var(--success);
+}
+
+.p-badge.warning {
+  color: #1b1e24;
+  background: var(--warning);
+}
+
+.p-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-muted);
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.p-divider {
+  flex: none;
+  height: 1px;
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+  background: var(--border);
+}
+
+.p-divider.vertical {
+  width: 1px;
+  height: auto;
+  align-self: stretch;
+  margin: 0 8px;
+}
+
+/* ---------------------------------------------------------------- empty state, spinner */
+.p-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.p-empty > svg,
+.p-empty > .p-icon {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 4px;
+  opacity: .7;
+}
+
+.p-empty > .p-icon > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.p-empty .title,
+.p-empty > strong,
+.p-empty > h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.p-empty .sub,
+.p-empty > p {
+  margin: 0;
+  max-width: 320px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@keyframes p-spin {
+  to { transform: rotate(360deg); }
+}
+
+.p-spinner {
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  border: 2.5px solid color-mix(in srgb, var(--text) 16%, transparent);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: p-spin .8s linear infinite;
+}
+
+.p-spinner.small {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
+.p-spinner.large {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+/* a status indicator keeps turning even when UI animations are switched off */
+.no-anim .p-spinner {
+  animation-duration: 1.2s !important;
+}
+
+/* ---------------------------------------------------------------- segmented control */
+.p-segmented {
+  display: inline-flex;
+  align-items: stretch;
+  flex: none;
+  gap: 2px;
+  box-sizing: border-box;
+  padding: 2px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.p-segmented > button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 28px;
+  height: 26px;
+  margin: 0;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  white-space: nowrap;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+
+.p-segmented > button > svg {
+  width: 16px;
+  height: 16px;
+}
+
+.p-segmented > button:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.p-segmented > button.active {
+  color: var(--text);
+  font-weight: 600;
+  background: var(--seg-active);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .22), 0 0 0 1px var(--border);
+}
+
+.p-segmented > button:disabled {
+  opacity: .42;
+  pointer-events: none;
+}

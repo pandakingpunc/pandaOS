@@ -1,0 +1,325 @@
+/* PandaOS — design tokens, reset and layer layout.
+   Every module takes surface/text/border/shadow colors from these variables so that
+   [data-theme] and the accent color apply everywhere. */
+
+:root {
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", Consolas, "JetBrains Mono", "Fira Code", "Courier New", monospace;
+  --font-size: 14px;
+  --font-size-sm: 12px;
+  --font-size-lg: 16px;
+
+  --taskbar-height: 48px;
+  --titlebar-height: 36px;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 320ms;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-in: cubic-bezier(.5, 0, .75, 0);
+
+  /* accent: overwritten at runtime by PandaOS.theme.apply() */
+  --accent: #2f9e6b;
+  --accent-contrast: #ffffff;
+  --accent-hover: color-mix(in srgb, var(--accent) 86%, white);
+  --accent-active: color-mix(in srgb, var(--accent) 84%, black);
+  --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --accent-softer: color-mix(in srgb, var(--accent) 9%, transparent);
+  --accent-border: color-mix(in srgb, var(--accent) 55%, transparent);
+  /* solid accent fills that carry text; refined at runtime by PandaOS.theme.apply() for >= 4.5:1 */
+  --accent-solid: color-mix(in srgb, var(--accent) 80%, black);
+  --accent-solid-hover: color-mix(in srgb, var(--accent-solid) 90%, black);
+  --accent-solid-active: color-mix(in srgb, var(--accent-solid) 80%, black);
+  --on-accent: #ffffff;
+
+  --danger: #e5484d;
+  --danger-hover: #f05a5f;
+  --success: #30a46c;
+  --warning: #f5a524;
+  --info: #3e8ef7;
+
+  --z-desktop: 0;
+  --z-windows: 10;
+  --z-taskbar: 1000;
+  --z-popups: 1100;
+  --z-toasts: 1450; /* above modal dialogs so a toast is never hidden under a backdrop */
+  --z-menu: 1300;
+  --z-dialog: 1400;
+  --z-lock: 2000;
+  --z-boot: 3000;
+
+  --blur-glass: blur(28px) saturate(170%);
+}
+
+/* ---------- dark (default) ---------- */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1d1f25;
+  --bg-elev: #262930;
+  --bg-elev-2: #2e323a;
+  --bg-sunken: #16181d;
+  --bg-hover: rgba(255, 255, 255, .06);
+  --bg-active: rgba(255, 255, 255, .10);
+  --surface-glass: rgba(28, 30, 37, .74);
+  --surface-glass-strong: rgba(32, 35, 42, .9);
+
+  --text: #eceef3;
+  --text-muted: #a3a9b6;
+  --text-faint: #8f96a4;
+  --text-on-glass: #f3f4f7;
+
+  --border: rgba(255, 255, 255, .08);
+  --border-strong: rgba(255, 255, 255, .16);
+
+  --titlebar-bg: #24272e;
+  --titlebar-bg-inactive: #1f2127;
+  --titlebar-text-inactive: #858b97;
+
+  --input-bg: #15171c;
+  --input-border: rgba(255, 255, 255, .12);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+  --shadow: 0 4px 14px rgba(0, 0, 0, .35);
+  --shadow-popup: 0 16px 48px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .07);
+  --shadow-window: 0 0 0 1px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .06) inset, 0 22px 60px rgba(0, 0, 0, .55);
+  --shadow-window-inactive: 0 0 0 1px rgba(0, 0, 0, .45), 0 10px 30px rgba(0, 0, 0, .4);
+
+  --overlay: rgba(0, 0, 0, .45);
+  --scrollbar-thumb: rgba(255, 255, 255, .18);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, .3);
+  --selection: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* ---------- light ---------- */
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --bg-elev: #f5f6f8;
+  --bg-elev-2: #eceef2;
+  --bg-sunken: #eef0f3;
+  --bg-hover: rgba(0, 0, 0, .05);
+  --bg-active: rgba(0, 0, 0, .09);
+  --surface-glass: rgba(246, 247, 250, .76);
+  --surface-glass-strong: rgba(250, 251, 252, .92);
+
+  --text: #1b1e24;
+  --text-muted: #5b6270;
+  --text-faint: #656c79;
+  --text-on-glass: #15171c;
+
+  --border: rgba(0, 0, 0, .09);
+  --border-strong: rgba(0, 0, 0, .18);
+
+  --titlebar-bg: #f1f2f5;
+  --titlebar-bg-inactive: #f8f9fa;
+  --titlebar-text-inactive: #69707c;
+
+  --input-bg: #ffffff;
+  --input-border: rgba(0, 0, 0, .16);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .08);
+  --shadow: 0 4px 14px rgba(0, 0, 0, .1);
+  --shadow-popup: 0 16px 48px rgba(0, 0, 0, .18), 0 0 0 1px rgba(0, 0, 0, .08);
+  --shadow-window: 0 0 0 1px rgba(0, 0, 0, .14), 0 22px 60px rgba(0, 0, 0, .22);
+  --shadow-window-inactive: 0 0 0 1px rgba(0, 0, 0, .1), 0 10px 30px rgba(0, 0, 0, .12);
+
+  --overlay: rgba(0, 0, 0, .28);
+  --scrollbar-thumb: rgba(0, 0, 0, .2);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, .34);
+  --selection: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+/* ---------- reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: var(--font-size);
+  line-height: 1.4;
+  color: var(--text);
+  background: #000;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input,
+textarea,
+[contenteditable="true"],
+.selectable {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+img,
+svg {
+  display: block;
+}
+
+::selection {
+  background: var(--selection);
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* thin scrollbars everywhere */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+/* animations off (settings.animations = false): keep events firing, make them instant */
+.no-anim *,
+.no-anim *::before,
+.no-anim *::after {
+  animation-duration: 1ms !important;
+  animation-delay: 0ms !important;
+  transition-duration: 1ms !important;
+  transition-delay: 0ms !important;
+}
+
+/* ---------- layers ---------- */
+#os-root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+#desktop {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-desktop);
+}
+
+#windows {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: var(--taskbar-height);
+  z-index: var(--z-windows);
+  pointer-events: none;
+}
+
+#taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--taskbar-height);
+  z-index: var(--z-taskbar);
+}
+
+#start-menu,
+#panels {
+  position: absolute;
+  inset: 0 0 var(--taskbar-height) 0;
+  z-index: var(--z-popups);
+  pointer-events: none;
+}
+
+#toasts {
+  position: absolute;
+  inset: 0 0 var(--taskbar-height) 0;
+  z-index: var(--z-toasts);
+  pointer-events: none;
+}
+
+#context-menu-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-menu);
+  pointer-events: none;
+}
+
+#dialog-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-dialog);
+  pointer-events: none;
+}
+
+#lock-screen {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-lock);
+  pointer-events: none;
+}
+
+#boot-screen {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-boot);
+  pointer-events: none;
+}
+
+/* the test harness output is never visible */
+#test-results {
+  display: none;
+}

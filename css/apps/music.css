@@ -1,0 +1,781 @@
+/* Müzik Çalar — everything is scoped under .app-music (the window body) and built from theme.css / components.css tokens. */
+
+.app-music {
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.app-music .mu-root {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ library */
+.app-music .mu-lib {
+  z-index: 3;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  width: clamp(236px, 36%, 300px);
+  min-height: 0;
+  background: var(--bg-elev);
+  border-right: 1px solid var(--border);
+}
+
+.app-music .mu-lib-head {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 6px;
+  padding: 10px 10px 6px;
+}
+
+.app-music .mu-search {
+  position: relative;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-music .mu-search-input {
+  width: 100%;
+  padding-left: 32px;
+  padding-right: 30px;
+}
+
+.app-music .mu-search-input::-webkit-search-cancel-button,
+.app-music .mu-search-input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.app-music .mu-search-ic {
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.app-music .mu-search-ic svg {
+  width: 16px;
+  height: 16px;
+}
+
+.app-music .mu-clear {
+  position: absolute;
+  top: 50%;
+  right: 3px;
+  margin-top: -12px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.app-music .mu-clear svg {
+  width: 14px;
+  height: 14px;
+}
+
+.app-music .mu-search-input:placeholder-shown ~ .mu-clear {
+  display: none;
+}
+
+.app-music .mu-list {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 0 6px 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: none;
+}
+
+.app-music .mu-list:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.app-music .mu-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 8px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  user-select: none;
+}
+
+.app-music .mu-count {
+  font-weight: 600;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-music .mu-row {
+  gap: 10px;
+  height: 54px;
+  min-height: 54px;
+  padding: 0 8px 0 7px;
+  border-radius: 9px;
+}
+
+.app-music .mu-row-lead {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .12), var(--shadow-sm);
+}
+
+.app-music .mu-cover {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+}
+
+.app-music .mu-cover svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-music .mu-cover.bad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-active);
+}
+
+.app-music .mu-cover.bad svg {
+  width: 26px;
+  height: 26px;
+}
+
+.app-music .mu-row-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(0, 0, 0, .46);
+  opacity: 0;
+  transition: opacity var(--dur-fast) ease;
+}
+
+.app-music .mu-row-play svg {
+  width: 20px;
+  height: 20px;
+}
+
+.app-music .mu-row:not(.current):not(.bad):hover .mu-row-play {
+  opacity: 1;
+}
+
+.app-music .mu-eq {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  padding-bottom: 11px;
+  background: rgba(0, 0, 0, .46);
+}
+
+.app-music .mu-row.current .mu-eq {
+  display: flex;
+}
+
+.app-music .mu-eq i {
+  display: block;
+  width: 3.5px;
+  height: 18px;
+  border-radius: 2px;
+  background: #fff;
+  transform-origin: 50% 100%;
+  animation: mu-eq 780ms ease-in-out infinite alternate;
+}
+
+.app-music .mu-eq i:nth-child(1) { animation-duration: 640ms; transform: scaleY(.55); }
+.app-music .mu-eq i:nth-child(2) { animation-duration: 860ms; animation-delay: -300ms; transform: scaleY(.9); }
+.app-music .mu-eq i:nth-child(3) { animation-duration: 720ms; animation-delay: -120ms; transform: scaleY(.4); }
+
+.app-music .mu-row:not(.playing) .mu-eq i {
+  animation-play-state: paused;
+}
+
+.app-music .mu-row:not(.playing) .mu-eq i:nth-child(1) { transform: scaleY(.3); }
+.app-music .mu-row:not(.playing) .mu-eq i:nth-child(2) { transform: scaleY(.3); }
+.app-music .mu-row:not(.playing) .mu-eq i:nth-child(3) { transform: scaleY(.3); }
+
+@keyframes mu-eq {
+  from { transform: scaleY(.22); }
+  to { transform: scaleY(1); }
+}
+
+.app-music .mu-row-info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.app-music .mu-row-title {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-music .mu-row-artist {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-music .mu-row-dur {
+  flex: none;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.app-music .mu-row.current .mu-row-title {
+  color: var(--accent-text);
+}
+
+.app-music .mu-row.current:not(.selected) {
+  background: var(--accent-softer);
+}
+
+.app-music .mu-row.bad .mu-row-title,
+.app-music .mu-row.bad .mu-row-dur {
+  color: var(--text-muted);
+}
+
+.app-music .mu-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 14px 8px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.app-music .mu-empty strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.app-music .mu-empty-ic {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 4px;
+  opacity: .85;
+}
+
+.app-music .mu-empty-ic svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-music .mu-empty-sub {
+  max-width: 220px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.app-music .mu-noresult {
+  padding-top: 36px;
+}
+
+/* ------------------------------------------------------------------ stage (now playing) */
+.app-music .mu-stage {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px 28px 18px;
+  background: radial-gradient(120% 75% at 50% -12%, color-mix(in srgb, var(--art-c1, var(--accent)) 26%, transparent), transparent 72%), var(--bg);
+  container-type: size;
+}
+
+.app-music .mu-stage-top {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: none;
+}
+
+.app-music .mu-hero {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  min-height: 0;
+}
+
+.app-music .mu-art-wrap {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 72px;
+  container-type: size;
+}
+
+.app-music .mu-art {
+  --pulse: 0;
+  position: relative;
+  flex: none;
+  width: min(100cqw, 100cqh, 340px);
+  height: min(100cqw, 100cqh, 340px);
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: 0 22px 44px -14px color-mix(in srgb, var(--art-c1, var(--accent)) 70%, transparent), 0 6px 16px rgba(0, 0, 0, .22);
+  transform: scale(calc(1 + var(--pulse) * .024));
+  transition: transform 110ms ease-out;
+}
+
+.app-music .mu-art-img {
+  position: absolute;
+  inset: 0;
+}
+
+.app-music .mu-art-img svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-music .mu-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(155deg, rgba(255, 255, 255, .2), transparent 42%, rgba(0, 0, 0, .2));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.app-music .mu-meta {
+  flex: none;
+  max-width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+
+.app-music .mu-title {
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-music .mu-artist {
+  max-width: 100%;
+  margin: 2px 0 0;
+  overflow: hidden;
+  font-size: 14px;
+  color: var(--text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-music .mu-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.app-music .mu-chips .p-badge {
+  font-weight: 600;
+}
+
+/* visualizer */
+.app-music .mu-viz-wrap {
+  position: relative;
+  flex: none;
+  height: 76px;
+  border-radius: 12px;
+}
+
+.app-music .mu-viz {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.app-music .mu-viz-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  color: var(--text-muted);
+  transition: opacity var(--dur-fast) ease;
+}
+
+.app-music .mu-viz-wrap:hover .mu-viz-toggle,
+.app-music .mu-viz-toggle:focus-visible {
+  opacity: 1;
+}
+
+/* progress */
+.app-music .mu-progress-row {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 14px;
+}
+
+.app-music .mu-progress {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 22px;
+  cursor: pointer;
+  touch-action: none;
+  border-radius: 6px;
+}
+
+.app-music .mu-progress:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.app-music .mu-prog-track {
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--text) 18%, transparent);
+  transition: height var(--dur-fast) ease;
+}
+
+.app-music .mu-progress:hover .mu-prog-track,
+.app-music .mu-progress.dragging .mu-prog-track,
+.app-music .mu-progress:focus-visible .mu-prog-track {
+  height: 7px;
+}
+
+.app-music .mu-prog-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 78%, white), var(--accent));
+}
+
+.app-music .mu-prog-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--ctl-thumb);
+  box-shadow: 0 0 0 1px var(--ctl-thumb-ring), 0 1px 5px rgba(0, 0, 0, .35);
+  transform: scale(0);
+  transition: transform var(--dur-fast) var(--ease-out);
+  pointer-events: none;
+}
+
+.app-music .mu-progress:hover .mu-prog-thumb,
+.app-music .mu-progress.dragging .mu-prog-thumb,
+.app-music .mu-progress:focus-visible .mu-prog-thumb {
+  transform: scale(1);
+}
+
+.app-music .mu-time {
+  flex: none;
+  min-width: 84px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* transport */
+.app-music .mu-controls {
+  display: grid;
+  flex: none;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.app-music .mu-modes {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.app-music .mu-transport {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-music .mu-vol {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  min-width: 0;
+}
+
+.app-music .mu-vol-range {
+  flex: 0 1 92px;
+  width: 92px;
+  min-width: 44px;
+}
+
+.app-music .mu-btn.p-btn.icon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  color: var(--text-muted);
+  border-radius: 50%;
+}
+
+.app-music .mu-btn.p-btn.icon > svg {
+  width: 20px;
+  height: 20px;
+}
+
+.app-music .mu-btn.p-btn.icon:hover {
+  color: var(--text);
+}
+
+.app-music .mu-btn.p-btn.icon.on {
+  color: var(--accent-text);
+}
+
+.app-music .mu-btn.p-btn.icon.on::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.app-music .mu-btn.p-btn.icon.mu-mute {
+  width: 32px;
+  height: 32px;
+}
+
+.app-music .mu-btn.p-btn.icon.mu-mute.on::after {
+  display: none;
+}
+
+.app-music .mu-btn.p-btn.icon.mu-mute > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.app-music .mu-btn.p-btn.icon.mu-play {
+  width: 56px;
+  height: 56px;
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--accent) 80%, transparent), inset 0 1px 0 rgba(255, 255, 255, .18);
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) ease;
+}
+
+.app-music .mu-btn.p-btn.icon.mu-play > svg {
+  width: 26px;
+  height: 26px;
+}
+
+.app-music .mu-btn.p-btn.icon.mu-play:hover {
+  color: var(--on-accent);
+  background: var(--accent-solid-hover);
+  transform: scale(1.06);
+}
+
+.app-music .mu-btn.p-btn.icon.mu-play:active {
+  background: var(--accent-solid-active);
+  transform: scale(.95);
+}
+
+.app-music .mu-root:not([data-state="playing"]) .mu-play > svg {
+  transform: translateX(1px);
+}
+
+.app-music .mu-repeat .mu-one {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: none;
+  padding: 2px 3.5px;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  border-radius: 6px;
+}
+
+.app-music .mu-repeat[data-mode="one"] .mu-one {
+  display: inline-block;
+}
+
+/* drop target */
+.app-music .mu-drop {
+  position: absolute;
+  inset: 8px;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  border: 2px dashed var(--accent);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.app-music .mu-root.dropping .mu-drop {
+  display: flex;
+}
+
+.app-music .mu-scrim {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ short windows: art beside the title, slimmer visualizer */
+.app-music .mu-root.is-compact .mu-stage {
+  gap: 10px;
+  padding: 12px 22px 14px;
+}
+
+.app-music .mu-root.is-compact .mu-hero {
+  flex: none;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.app-music .mu-root.is-compact .mu-art-wrap {
+  flex: none;
+  width: clamp(96px, 34cqh, 168px);
+  height: clamp(96px, 34cqh, 168px);
+  min-height: 0;
+}
+
+.app-music .mu-root.is-compact .mu-meta {
+  flex: 1 1 auto;
+  padding-right: 40px;
+  text-align: left;
+}
+
+.app-music .mu-root.is-compact .mu-title {
+  font-size: 19px;
+}
+
+.app-music .mu-root.is-compact .mu-chips {
+  justify-content: flex-start;
+  margin-top: 6px;
+}
+
+.app-music .mu-root.is-compact .mu-viz-wrap {
+  flex: 1 1 0;
+  min-height: 36px;
+  max-height: 100px;
+}
+
+/* ------------------------------------------------------------------ narrow windows: the library becomes a slide-over panel */
+.app-music .mu-root.is-narrow .mu-lib {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: min(320px, 88%);
+  visibility: hidden;
+  box-shadow: var(--shadow-popup);
+  transform: translateX(-104%);
+  transition: transform var(--dur) var(--ease-out), visibility 0s linear var(--dur);
+}
+
+.app-music .mu-root.is-narrow.lib-open .mu-lib {
+  visibility: visible;
+  transform: none;
+  transition: transform var(--dur) var(--ease-out), visibility 0s;
+}
+
+.app-music .mu-root.is-narrow .mu-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  background: var(--overlay);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) ease;
+}
+
+.app-music .mu-root.is-narrow.lib-open .mu-scrim {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.app-music .mu-root.is-narrow .mu-stage-top {
+  display: block;
+}
+
+.app-music .mu-root.is-narrow .mu-stage {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-music .mu-eq i {
+    animation: none;
+  }
+}

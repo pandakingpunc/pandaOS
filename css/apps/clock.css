@@ -1,0 +1,1460 @@
+/* PandaOS — Saat. Everything is scoped under .app-clock (the window body). */
+
+.app-clock {
+  --ck-good: color-mix(in srgb, var(--success) 62%, var(--text));
+  --ck-bad: color-mix(in srgb, var(--danger) 68%, var(--text));
+  --ck-warm: color-mix(in srgb, var(--warning) 74%, var(--text));
+  --ck-cool: color-mix(in srgb, var(--info) 70%, var(--text));
+  --ck-card: var(--bg-elev);
+  --ck-card-hero: radial-gradient(130% 150% at 0% 0%, var(--accent-softer), transparent 58%), var(--bg-elev);
+  font-size: 13px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.app-clock [hidden] {
+  display: none !important;
+}
+
+.app-clock .ck-root {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--bg);
+}
+
+.app-clock .ck-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  container: ck / inline-size;
+}
+
+/* ---------------------------------------------------------------- tabs */
+.app-clock .ck-head {
+  flex: none;
+  padding: 12px 16px 8px;
+}
+
+.app-clock .ck-tabs {
+  display: flex;
+  width: 100%;
+}
+
+.app-clock .ck-tabs > .ck-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.app-clock .ck-tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-clock .ck-tabs > .ck-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.app-clock .ck-badge {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  border-radius: 9px;
+}
+
+.app-clock .ck-badge.dot {
+  min-width: 8px;
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  background: var(--accent);
+  animation: ck-blink 1.4s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------- panels */
+.app-clock .ck-panels {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-clock .ck-panel {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: 4px 16px 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: none;
+}
+
+.app-clock .ck-h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.app-clock .ck-h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.app-clock .ck-count {
+  padding: 1px 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-active);
+  border-radius: 99px;
+}
+
+.app-clock .ck-count:empty {
+  display: none;
+}
+
+.app-clock .ck-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 22px 0 12px;
+}
+
+.app-clock .ck-alarm .ck-sec-head {
+  margin-top: 8px;
+}
+
+.app-clock .ck-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.app-clock .ck-sec-title.stack {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.app-clock .ck-sec-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-empty {
+  padding-top: 40px;
+}
+
+.app-clock .ck-hint,
+.app-clock .ck-tnone {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-tnone {
+  padding: 16px;
+  text-align: center;
+  border: 1px dashed var(--border-strong);
+  border-radius: 12px;
+}
+
+/* ---------------------------------------------------------------- analog faces */
+.app-clock .ck-face {
+  display: block;
+  overflow: visible;
+}
+
+.app-clock .ck-dial {
+  fill: var(--bg);
+  stroke: var(--border-strong);
+  stroke-width: 2.5;
+}
+
+.app-clock .ck-tick {
+  stroke: var(--text-muted);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.app-clock .ck-tick.major {
+  stroke: var(--text);
+  stroke-width: 3;
+}
+
+.app-clock .ck-face.small .ck-tick.major {
+  stroke-width: 5;
+}
+
+.app-clock .ck-numerals text {
+  fill: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.app-clock .ck-hand line {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.app-clock .ck-hand-hour line {
+  stroke: var(--text);
+  stroke-width: 6;
+}
+
+.app-clock .ck-hand-min line {
+  stroke: var(--text);
+  stroke-width: 4;
+}
+
+.app-clock .ck-hand-sec line {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.app-clock .ck-face.small .ck-hand-hour line {
+  stroke-width: 9;
+}
+
+.app-clock .ck-face.small .ck-hand-min line {
+  stroke-width: 6.5;
+}
+
+.app-clock .ck-face.small .ck-hand-sec line {
+  stroke-width: 3;
+}
+
+.app-clock .ck-cap {
+  fill: var(--accent);
+}
+
+.app-clock .ck-cap-in {
+  fill: var(--bg);
+}
+
+/* ---------------------------------------------------------------- world clock hero */
+.app-clock .ck-hero {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 20px 28px;
+  background: var(--ck-card-hero);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.app-clock .ck-bigclock {
+  flex: none;
+  width: 208px;
+  height: 208px;
+}
+
+.app-clock .ck-bigclock .ck-face {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .26));
+}
+
+.app-clock .ck-hero-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-clock .ck-hero-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-hero-time {
+  margin-top: 4px;
+  font-size: 56px;
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+.app-clock .ck-hero-period {
+  margin-left: 8px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-hero-period:empty {
+  display: none;
+}
+
+.app-clock .ck-hero-date {
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.app-clock .ck-hero-zone {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------- city cards */
+.app-clock .ck-cities {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.app-clock .ck-city {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px 12px 12px;
+  background: var(--ck-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+
+.app-clock .ck-city:hover {
+  background: color-mix(in srgb, var(--bg-elev) 90%, var(--text) 4%);
+  border-color: var(--border-strong);
+}
+
+.app-clock .ck-city.enter {
+  animation: ck-in .36s var(--ease-out);
+}
+
+.app-clock .ck-city-face {
+  width: 56px;
+  height: 56px;
+}
+
+.app-clock .ck-city-face .ck-face {
+  width: 100%;
+  height: 100%;
+}
+
+.app-clock .ck-city.night .ck-dial {
+  fill: var(--bg-sunken);
+}
+
+.app-clock .ck-city-body {
+  min-width: 0;
+}
+
+.app-clock .ck-city-name {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-clock .ck-city-sub {
+  overflow: hidden;
+  margin-top: 1px;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-clock .ck-city-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.app-clock .ck-city-clock {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+
+.app-clock .ck-city-per {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-city-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-clock .ck-dn {
+  display: inline-flex;
+}
+
+.app-clock .ck-dn.day {
+  color: var(--ck-warm);
+}
+
+.app-clock .ck-dn.night {
+  color: var(--ck-cool);
+}
+
+.app-clock .ck-rel {
+  padding: 2px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-muted);
+  white-space: nowrap;
+  background: var(--bg-active);
+  border-radius: 99px;
+}
+
+.app-clock .ck-x {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  color: var(--text-muted);
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.7);
+  pointer-events: none;
+  cursor: default;
+  transition: opacity var(--dur-fast) ease, transform var(--dur) var(--ease-out), background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.app-clock .ck-city:hover .ck-x,
+.app-clock .ck-city:focus-within .ck-x {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.app-clock .ck-x:hover {
+  color: #fff;
+  background: var(--danger);
+  border-color: transparent;
+}
+
+.app-clock .ck-x:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---------------------------------------------------------------- alarm list */
+.app-clock .ck-alarms {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app-clock .ck-acard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px 4px 4px;
+  background: var(--ck-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+
+.app-clock .ck-acard:hover {
+  border-color: var(--border-strong);
+}
+
+.app-clock .ck-acard-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 12px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-clock .ck-acard-main:hover {
+  background: var(--bg-hover);
+}
+
+.app-clock .ck-acard-main:active {
+  background: var(--bg-active);
+}
+
+.app-clock .ck-acard-main:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-clock .ck-atop {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-width: 0;
+}
+
+.app-clock .ck-atime {
+  flex: none;
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+
+.app-clock .ck-aper {
+  margin-left: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-alabel {
+  overflow: hidden;
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-clock .ck-acard.off .ck-atime,
+.app-clock .ck-acard.off .ck-alabel {
+  color: var(--text-muted);
+}
+
+.app-clock .ck-adays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+}
+
+.app-clock .ck-day {
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-faint);
+  border-radius: 6px;
+}
+
+.app-clock .ck-day.on {
+  color: var(--on-accent);
+  background: var(--accent-solid);
+}
+
+.app-clock .ck-acard.off .ck-day.on {
+  color: var(--text);
+  background: var(--bg-active);
+}
+
+.app-clock .ck-once {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-snoozed {
+  margin-left: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ck-warm);
+}
+
+.app-clock .ck-aside {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------------------------------------------------------------- chips (presets, weekdays) */
+.app-clock .ck-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.app-clock .ck-chip {
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 99px;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease, border-color var(--dur-fast) ease;
+}
+
+.app-clock .ck-chip:hover {
+  background: var(--bg-hover);
+}
+
+.app-clock .ck-chip:active {
+  background: var(--bg-active);
+}
+
+.app-clock .ck-chip[aria-pressed="true"] {
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  border-color: transparent;
+}
+
+.app-clock .ck-chip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- timers */
+.app-clock .ck-tgrid {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.app-clock .ck-thero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 16px;
+  background: var(--ck-card-hero);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.app-clock .ck-ring-wrap {
+  position: relative;
+  width: 224px;
+  height: 224px;
+}
+
+.app-clock .ck-ring-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-clock .ck-ring-track {
+  fill: none;
+  stroke: color-mix(in srgb, var(--text) 12%, transparent);
+  stroke-width: 12;
+}
+
+.app-clock .ck-ring-prog {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke var(--dur) ease;
+}
+
+.app-clock .ck-mini {
+  display: block;
+  flex: none;
+  width: 42px;
+  height: 42px;
+}
+
+.app-clock .ck-mini .ck-ring-track,
+.app-clock .ck-mini .ck-ring-prog {
+  stroke-width: 4.5;
+}
+
+.app-clock .is-draft .ck-ring-prog {
+  stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.app-clock .is-idle .ck-ring-prog {
+  stroke: var(--text-faint);
+}
+
+.app-clock .is-paused .ck-ring-prog {
+  stroke: var(--warning);
+}
+
+.app-clock .is-done .ck-ring-prog {
+  stroke: var(--danger);
+  animation: ck-blink 1s ease-in-out infinite;
+}
+
+.app-clock .ck-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.app-clock .ck-ring-time {
+  font-size: 48px;
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -.02em;
+}
+
+.app-clock .ck-ring-time.long {
+  font-size: 38px;
+}
+
+.app-clock .is-draft .ck-ring-time {
+  color: var(--text-muted);
+}
+
+.app-clock .ck-ring-label {
+  max-width: 150px;
+  min-height: 18px;
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-clock .ck-ring-state {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-thero.is-running .ck-ring-state {
+  color: var(--accent-text);
+}
+
+.app-clock .ck-thero.is-paused .ck-ring-state {
+  color: var(--ck-warm);
+}
+
+.app-clock .ck-thero.is-done .ck-ring-state {
+  color: var(--ck-bad);
+}
+
+.app-clock .ck-ring-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-clock .p-btn.ck-round {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+}
+
+.app-clock .p-btn.ck-big {
+  height: 44px;
+  padding: 0 24px;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 22px;
+}
+
+.app-clock .ck-ico {
+  display: inline-flex;
+}
+
+.app-clock .ck-compose {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  background: var(--ck-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.app-clock .ck-hms {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.app-clock .ck-hms-field {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.app-clock .ck-num {
+  width: 100%;
+  height: 46px;
+  padding: 0 4px 0 10px;
+  font-size: 22px;
+  text-align: center;
+}
+
+.app-clock .ck-hms-unit {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-colon {
+  padding-top: 8px;
+  font-size: 24px;
+  line-height: 30px;
+  color: var(--text-faint);
+}
+
+.app-clock .ck-compose-row {
+  display: flex;
+  gap: 8px;
+}
+
+.app-clock .ck-tlabel {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-clock .ck-tlist-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0 8px;
+}
+
+.app-clock .ck-tlist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-clock .ck-trow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 8px 3px 3px;
+  background: var(--ck-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+
+.app-clock .ck-trow:hover {
+  border-color: var(--border-strong);
+}
+
+.app-clock .ck-trow.selected {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
+.app-clock .ck-trow-main {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 6px 8px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: default;
+}
+
+.app-clock .ck-trow-main:hover {
+  background: var(--bg-hover);
+}
+
+.app-clock .ck-trow-main:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-clock .ck-trow-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-clock .ck-trow-time {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.app-clock .ck-trow-sub {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-clock .ck-trow.is-done .ck-trow-time {
+  color: var(--ck-bad);
+}
+
+/* ---------------------------------------------------------------- stopwatch */
+.app-clock .ck-panel.ck-sw {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.app-clock .ck-sw-top {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 0 6px;
+}
+
+.app-clock .ck-sw-display {
+  font-size: clamp(46px, 15cqw, 92px);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -.025em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.app-clock .ck-sw-cs {
+  font-size: .62em;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+.app-clock .ck-sw-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-clock .ck-sw-controls .p-btn {
+  height: 40px;
+  padding: 0 18px;
+}
+
+.app-clock .ck-sw-controls .p-btn.ck-big {
+  min-width: 148px;
+  height: 46px;
+}
+
+.app-clock .p-btn.primary.is-running {
+  color: #fff;
+  background: color-mix(in srgb, var(--danger) 80%, black);
+  border-color: color-mix(in srgb, var(--danger) 60%, black);
+}
+
+.app-clock .p-btn.primary.is-running:hover {
+  background: color-mix(in srgb, var(--danger) 88%, black);
+}
+
+.app-clock .ck-sw-keys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-dotsep {
+  width: 3px;
+  height: 3px;
+  margin: 0 6px;
+  background: var(--text-faint);
+  border-radius: 50%;
+}
+
+.app-clock .ck-laps {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--ck-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.app-clock .ck-nolaps {
+  flex: none;
+}
+
+.app-clock .ck-laptable {
+  width: 100%;
+  font-size: 14px;
+  border-collapse: collapse;
+}
+
+.app-clock .ck-laptable th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--text-muted);
+  background: var(--bg-elev-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-clock .ck-laptable td {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.app-clock .ck-laptable tbody tr:first-child td {
+  border-top: 0;
+}
+
+.app-clock .ck-laptable .r {
+  text-align: right;
+}
+
+.app-clock .ck-lap.current td {
+  color: var(--text-muted);
+}
+
+.app-clock .ck-lap.best td {
+  color: var(--ck-good);
+}
+
+.app-clock .ck-lap.worst td {
+  color: var(--ck-bad);
+}
+
+.app-clock .ck-lap-tag {
+  margin-left: 10px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+  border-radius: 99px;
+}
+
+/* ---------------------------------------------------------------- ringing banner */
+.app-clock .ck-rings {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 16px 8px;
+}
+
+.app-clock .ck-ring-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 12px;
+  background: color-mix(in srgb, var(--warning) 14%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--warning) 55%, transparent);
+  border-radius: 12px;
+  animation: ck-pulse 1.8s ease-in-out infinite;
+}
+
+.app-clock .ck-ring-ico {
+  display: inline-flex;
+  color: var(--ck-warm);
+  transform-origin: 50% 20%;
+  animation: ck-shake 1s ease-in-out infinite;
+}
+
+.app-clock .ck-ring-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-clock .ck-ring-btns {
+  display: flex;
+  flex: none;
+  gap: 6px;
+}
+
+/* ---------------------------------------------------------------- sheets (in-window dialogs) */
+.app-clock .ck-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 16px;
+  background: var(--overlay);
+  animation: ck-fade .16s ease-out;
+}
+
+.app-clock .ck-sheet {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(460px, 100%);
+  max-height: 100%;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  box-shadow: var(--shadow-popup);
+  animation: ck-pop .24s var(--ease-out);
+}
+
+.app-clock .ck-sheet.ck-picker {
+  width: min(420px, 100%);
+  height: min(520px, 100%);
+}
+
+.app-clock .ck-sheet-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 4px 20px;
+}
+
+.app-clock .ck-sheet-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.app-clock .ck-sheet-body {
+  min-height: 0;
+  padding: 8px 20px 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.app-clock .ck-picker .ck-sheet-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.app-clock .ck-sheet-foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.app-clock .ck-sheet-foot .spacer {
+  flex: 1 1 0;
+}
+
+.app-clock .p-btn.danger-text {
+  color: var(--ck-bad);
+}
+
+.app-clock .ck-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-clock .ck-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.app-clock .ck-field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-time-input {
+  width: 100%;
+  height: 60px;
+  font-size: 34px;
+  font-weight: 300;
+  text-align: center;
+}
+
+.app-clock .ck-daychips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.app-clock .ck-chip.day {
+  min-width: 42px;
+  height: 32px;
+  padding: 0 8px;
+}
+
+.app-clock .ck-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 2px 0 0 -8px;
+}
+
+.app-clock .ck-preview {
+  min-height: 18px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-pickwrap {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.app-clock .ck-search {
+  width: 100%;
+  flex: none;
+}
+
+.app-clock .ck-picklist {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  margin: 0 -10px;
+  padding: 0 10px;
+  overflow-y: auto;
+}
+
+.app-clock .ck-pick {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  padding: 6px 10px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-clock .ck-pick:hover:not(:disabled),
+.app-clock .ck-pick:focus-visible {
+  background: var(--bg-hover);
+}
+
+.app-clock .ck-pick:active:not(:disabled) {
+  background: var(--bg-active);
+}
+
+.app-clock .ck-pick:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-clock .ck-pick:disabled {
+  color: var(--text-muted);
+}
+
+.app-clock .ck-pick-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-clock .ck-pick-name {
+  font-weight: 600;
+}
+
+.app-clock .ck-pick-country {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-clock .ck-pick-time {
+  flex: none;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.app-clock .ck-pick-time small {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-pick-state {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-muted);
+}
+
+.app-clock .ck-pick.added .ck-pick-state {
+  color: var(--accent-text);
+}
+
+.app-clock .ck-pick-none {
+  padding: 24px 8px;
+  font-size: 13px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------- responsive (container = the window content) */
+@container ck (max-width: 640px) {
+  .app-clock .ck-hero {
+    gap: 22px;
+    padding: 16px 22px;
+  }
+
+  .app-clock .ck-bigclock {
+    width: 176px;
+    height: 176px;
+  }
+
+  .app-clock .ck-hero-time {
+    font-size: 44px;
+  }
+
+  .app-clock .ck-tgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-clock .ck-thero {
+    flex-direction: row;
+    justify-content: center;
+    gap: 28px;
+  }
+}
+
+@container ck (max-width: 580px) {
+  .app-clock .ck-tab > .p-icon {
+    display: none;
+  }
+
+  .app-clock .ck-panel,
+  .app-clock .ck-head {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .app-clock .ck-thero {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+/* ---------------------------------------------------------------- motion */
+@keyframes ck-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ck-pop {
+  from { opacity: 0; transform: translateY(10px) scale(.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ck-in {
+  from { opacity: 0; transform: scale(.94); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ck-blink {
+  50% { opacity: .38; }
+}
+
+@keyframes ck-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--warning) 38%, transparent); }
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--warning) 0%, transparent); }
+}
+
+@keyframes ck-shake {
+  0%, 55%, 100% { transform: rotate(0); }
+  10% { transform: rotate(-16deg); }
+  20% { transform: rotate(14deg); }
+  30% { transform: rotate(-10deg); }
+  40% { transform: rotate(8deg); }
+  48% { transform: rotate(-3deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-clock .ck-ring-item,
+  .app-clock .ck-ring-ico,
+  .app-clock .is-done .ck-ring-prog,
+  .app-clock .ck-badge.dot {
+    animation: none;
+  }
+}

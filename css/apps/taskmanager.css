@@ -1,0 +1,1037 @@
+/* PandaOS — Görev Yöneticisi. Everything is scoped under .app-taskmanager (the window body). */
+
+.app-taskmanager {
+  --tm-h1: color-mix(in srgb, var(--accent) 9%, transparent);
+  --tm-h2: color-mix(in srgb, var(--warning) 15%, transparent);
+  --tm-h3: color-mix(in srgb, var(--warning) 28%, transparent);
+  --tm-h4: color-mix(in srgb, color-mix(in srgb, var(--warning) 62%, var(--danger)) 44%, transparent);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.app-taskmanager [hidden] {
+  display: none !important;
+}
+
+.app-taskmanager .tm-shell {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--bg);
+}
+
+/* ---------------------------------------------------------------- navigation rail */
+.app-taskmanager .tm-rail {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: border-box;
+  width: 176px;
+  padding: 8px;
+  overflow: hidden;
+  background: var(--bg-elev);
+  border-right: 1px solid var(--border);
+}
+
+.app-taskmanager .tm-shell.compact .tm-rail {
+  width: 52px;
+}
+
+.app-taskmanager .tm-nav {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 38px;
+  margin: 0;
+  padding: 0 9px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-taskmanager .tm-nav:hover {
+  background: var(--bg-hover);
+}
+
+.app-taskmanager .tm-nav:active {
+  background: var(--bg-active);
+}
+
+.app-taskmanager .tm-nav.active {
+  font-weight: 600;
+  background: var(--accent-soft);
+}
+
+.app-taskmanager .tm-nav.active:hover {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.app-taskmanager .tm-nav.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.app-taskmanager .tm-nav .p-icon {
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-nav.active .p-icon {
+  color: var(--accent-text);
+}
+
+.app-taskmanager .tm-nav-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-taskmanager .tm-shell.compact .tm-nav-label {
+  display: none;
+}
+
+.app-taskmanager .tm-burger {
+  margin-bottom: 6px;
+}
+
+.app-taskmanager .tm-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-taskmanager .tm-rail-spacer {
+  flex: 1 1 auto;
+}
+
+/* ---------------------------------------------------------------- main + pages */
+.app-taskmanager .tm-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.app-taskmanager .tm-page {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.app-taskmanager .tm-toolbar {
+  gap: 6px;
+  padding: 6px 12px;
+}
+
+.app-taskmanager .tm-title {
+  flex: none;
+  margin: 0 8px 0 2px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.app-taskmanager .tm-search {
+  position: relative;
+  display: flex;
+  flex: 0 1 220px;
+  align-items: center;
+  min-width: 90px;
+}
+
+.app-taskmanager .tm-search-input {
+  width: 100%;
+  padding-left: 28px;
+  padding-right: 26px;
+}
+
+.app-taskmanager .tm-search-ico {
+  position: absolute;
+  left: 9px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.app-taskmanager .tm-search-clear {
+  position: absolute;
+  right: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.app-taskmanager .tm-search-clear:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-btn-label {
+  display: none;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-btn-new,
+.app-taskmanager .tm-shell[data-size="sm"] .tm-page-history .p-btn.small:not(.tm-btn-end) {
+  padding: 0;
+}
+
+/* ---------------------------------------------------------------- grid (processes / history / details) */
+.app-taskmanager .tm-grid {
+  --cols: 1fr;
+  --minw: 0px;
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  background: var(--bg);
+  outline: none;
+}
+
+.app-taskmanager .tm-grid:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-taskmanager .tm-proc {
+  --cols: minmax(160px, 1fr) 132px 68px 92px 104px;
+  --minw: 560px;
+}
+
+.app-taskmanager .tm-hist {
+  --cols: minmax(130px, 1fr) 92px 148px 124px 92px;
+  --minw: 560px;
+}
+
+.app-taskmanager .tm-det {
+  --cols: 56px minmax(150px, 1fr) 128px minmax(100px, 1fr) 82px 72px;
+  --minw: 588px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-proc {
+  --cols: minmax(130px, 1fr) 68px 92px 104px;
+  --minw: 0px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-hist {
+  --cols: minmax(110px, 1fr) 92px 136px 124px;
+  --minw: 0px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-det {
+  --cols: 58px minmax(100px, 0.8fr) minmax(110px, 1.2fr) 88px;
+  --minw: 0px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-proc .tm-c-state,
+.app-taskmanager .tm-shell[data-size="sm"] .tm-det .tm-c-state,
+.app-taskmanager .tm-shell[data-size="sm"] .tm-det .tm-c-pos,
+.app-taskmanager .tm-shell[data-size="sm"] .tm-hist .tm-c-last,
+.app-taskmanager .tm-shell[data-size="sm"] .tm-proc .tm-sub {
+  display: none;
+}
+
+.app-taskmanager .tm-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: var(--cols);
+  box-sizing: border-box;
+  min-width: var(--minw);
+  height: 38px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-taskmanager .tm-proc .tm-head {
+  height: 58px;
+}
+
+.app-taskmanager .tm-hc {
+  display: flex;
+  min-width: 0;
+}
+
+.app-taskmanager .tm-hc + .tm-hc {
+  box-shadow: inset 1px 0 0 var(--border);
+}
+
+.app-taskmanager .tm-th {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.app-taskmanager .tm-th:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.app-taskmanager .tm-th:focus-visible {
+  outline-offset: -2px;
+}
+
+.app-taskmanager .tm-hc.tm-num .tm-th {
+  align-items: flex-end;
+}
+
+.app-taskmanager .tm-hc.sorted .tm-th {
+  color: var(--text);
+}
+
+.app-taskmanager .tm-th-total {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.app-taskmanager .tm-th-bot {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.app-taskmanager .tm-th-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-taskmanager .tm-th-arrow {
+  display: inline-flex;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  color: var(--accent-text);
+}
+
+.app-taskmanager .tm-body {
+  box-sizing: border-box;
+  min-width: var(--minw);
+  padding-bottom: 8px;
+}
+
+.app-taskmanager .tm-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--cols);
+  align-items: stretch;
+  min-height: 36px;
+  background: transparent;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-taskmanager .tm-row:hover {
+  background: var(--bg-hover);
+}
+
+.app-taskmanager .tm-row.selected {
+  background: var(--accent-soft);
+}
+
+.app-taskmanager .tm-row.selected::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  bottom: 7px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.app-taskmanager .tm-row.selected:hover {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.app-taskmanager .tm-c {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-taskmanager .tm-c > span:not(.tm-ico):not(.tm-twisty),
+.app-taskmanager .tm-t {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-taskmanager .tm-num {
+  justify-content: flex-end;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-taskmanager .tm-c.tm-num {
+  transition: background-color 0.5s ease;
+}
+
+.app-taskmanager .heat-1 { background: var(--tm-h1); }
+.app-taskmanager .heat-2 { background: var(--tm-h2); }
+.app-taskmanager .heat-3 { background: var(--tm-h3); }
+.app-taskmanager .heat-4 { background: var(--tm-h4); }
+
+.app-taskmanager .tm-row.selected .tm-num {
+  background-image: linear-gradient(var(--accent-soft), var(--accent-soft));
+}
+
+.app-taskmanager .tm-c-name {
+  gap: 8px;
+}
+
+.app-taskmanager .tm-ico {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.app-taskmanager .tm-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border-radius: 6px;
+}
+
+.app-taskmanager .tm-label {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-taskmanager .tm-sub {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-overflow: ellipsis;
+}
+
+.app-taskmanager .tm-sub:empty {
+  display: none;
+}
+
+.app-taskmanager .tm-twisty {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: -4px;
+  color: var(--text-muted);
+  border-radius: 4px;
+}
+
+.app-taskmanager .tm-twisty .p-icon svg {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.app-taskmanager .tm-row.expanded .tm-twisty .p-icon svg {
+  transform: rotate(90deg);
+}
+
+.app-taskmanager .tm-row.has-kids .tm-twisty:hover {
+  color: var(--text);
+  background: var(--bg-active);
+}
+
+.app-taskmanager .tm-row:not(.has-kids):not(.tm-sec) .tm-twisty {
+  visibility: hidden;
+}
+
+.app-taskmanager .tm-hist-row .tm-twisty,
+.app-taskmanager .tm-det-row .tm-twisty {
+  display: none;
+}
+
+.app-taskmanager .tm-child {
+  min-height: 32px;
+}
+
+.app-taskmanager .tm-child .tm-c-name {
+  padding-left: 30px;
+}
+
+.app-taskmanager .tm-child .tm-ico {
+  opacity: 0.85;
+}
+
+.app-taskmanager .tm-row.is-min .tm-label,
+.app-taskmanager .tm-row.is-min .tm-num,
+.app-taskmanager .tm-row.is-min .tm-c-title {
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-row.is-min .tm-ico {
+  opacity: 0.65;
+}
+
+.app-taskmanager .tm-sec {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.app-taskmanager .tm-sec:hover {
+  background: var(--bg-hover);
+}
+
+.app-taskmanager .tm-sec-cell {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.app-taskmanager .tm-sec-label {
+  color: var(--accent-text);
+}
+
+.app-taskmanager .tm-sec-count {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-c-state {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-dot {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+.app-taskmanager .tm-dot.run {
+  background: var(--success);
+}
+
+.app-taskmanager .tm-dot.idle {
+  box-shadow: inset 0 0 0 1.5px var(--text-faint);
+}
+
+.app-taskmanager .tm-dot.off {
+  background: var(--text-faint);
+  opacity: 0.5;
+}
+
+.app-taskmanager .tm-sys .tm-c-state {
+  color: var(--text-faint);
+}
+
+/* history */
+.app-taskmanager .tm-c-total {
+  position: relative;
+}
+
+.app-taskmanager .tm-bar {
+  position: absolute;
+  left: 10px;
+  bottom: 5px;
+  height: 3px;
+  width: calc((100% - 20px) * var(--r, 0));
+  min-width: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  opacity: 0.85;
+}
+
+.app-taskmanager .tm-dur {
+  position: relative;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-taskmanager .tm-c-last,
+.app-taskmanager .tm-c-pos,
+.app-taskmanager .tm-c-size,
+.app-taskmanager .tm-c-pid {
+  font-variant-numeric: tabular-nums;
+}
+
+.app-taskmanager .tm-c-pid,
+.app-taskmanager .tm-c-pos,
+.app-taskmanager .tm-c-size,
+.app-taskmanager .tm-c-title {
+  color: var(--text);
+}
+
+.app-taskmanager .tm-c-size,
+.app-taskmanager .tm-c-pos,
+.app-taskmanager .tm-c-last {
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-det .tm-c,
+.app-taskmanager .tm-det .tm-th {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.app-taskmanager .tm-empty {
+  padding-top: 56px;
+}
+
+.app-taskmanager .tm-status {
+  gap: 10px;
+}
+
+/* ---------------------------------------------------------------- performance */
+.app-taskmanager .tm-page-performance {
+  flex-direction: row;
+}
+
+.app-taskmanager .tm-reslist {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 4px;
+  box-sizing: border-box;
+  width: 206px;
+  padding: 8px;
+  overflow: auto;
+  border-right: 1px solid var(--border);
+}
+
+.app-taskmanager .tm-res {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  min-height: 62px;
+  margin: 0;
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--text);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-taskmanager .tm-res:hover {
+  background: var(--bg-hover);
+}
+
+.app-taskmanager .tm-res.active {
+  background: var(--accent-soft);
+}
+
+.app-taskmanager .tm-res.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 22px;
+  margin-top: -11px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.app-taskmanager .tm-spark {
+  display: block;
+  flex: none;
+  width: 58px;
+  height: 42px;
+  box-sizing: border-box;
+  background: var(--accent-softer);
+  border: 1px solid var(--accent-border);
+  border-radius: 4px;
+}
+
+.app-taskmanager .tm-res-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.app-taskmanager .tm-res-name {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.app-taskmanager .tm-res-name small {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-res-sub {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--text-muted);
+  white-space: pre-line;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-taskmanager .tm-detail {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 14px 18px 16px;
+  overflow: auto;
+}
+
+.app-taskmanager .tm-dhead {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.app-taskmanager .tm-dtitles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+  min-width: 0;
+}
+
+.app-taskmanager .tm-dtitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.app-taskmanager .tm-dmodel {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-plot {
+  display: flex;
+  flex: 1 1 210px;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 140px;
+}
+
+.app-taskmanager .tm-plot-top,
+.app-taskmanager .tm-plot-bot {
+  display: flex;
+  flex: none;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-plot-area {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 100px;
+  overflow: hidden;
+  background: var(--accent-softer);
+  border: 1px solid var(--accent-border);
+}
+
+.app-taskmanager .tm-plot-area.is-cores {
+  background: transparent;
+  border-color: transparent;
+}
+
+.app-taskmanager .tm-chart {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.app-taskmanager .tm-coregrid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.app-taskmanager .tm-core {
+  position: relative;
+  overflow: hidden;
+  background: var(--accent-softer);
+  border: 1px solid var(--accent-border);
+}
+
+.app-taskmanager .tm-corecv {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.app-taskmanager .tm-core-lab {
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-extra {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-taskmanager .tm-extra:empty {
+  display: none;
+}
+
+.app-taskmanager .tm-barlab {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-membar {
+  display: flex;
+  height: 18px;
+  overflow: hidden;
+  background: var(--accent-softer);
+  border: 1px solid var(--accent-border);
+  border-radius: 3px;
+}
+
+.app-taskmanager .tm-seg {
+  display: block;
+  flex: none;
+  height: 100%;
+  width: 0;
+  transition: width 0.4s ease;
+}
+
+.app-taskmanager .tm-seg.used {
+  background: var(--accent);
+}
+
+.app-taskmanager .tm-seg.cache {
+  background: color-mix(in srgb, var(--accent) 38%, transparent);
+}
+
+.app-taskmanager .tm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-sw {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 2px;
+  border: 1px solid var(--accent-border);
+}
+
+.app-taskmanager .tm-sw.used {
+  background: var(--accent);
+}
+
+.app-taskmanager .tm-sw.cache {
+  background: color-mix(in srgb, var(--accent) 38%, transparent);
+}
+
+.app-taskmanager .tm-stats {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 10px 14px;
+}
+
+.app-taskmanager .tm-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.app-taskmanager .tm-stat-k {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-stat-v {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-taskmanager .tm-info {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 4px 24px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.app-taskmanager .tm-irow {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.app-taskmanager .tm-irow .k {
+  flex: none;
+  min-width: 112px;
+  color: var(--text-muted);
+}
+
+.app-taskmanager .tm-irow .v {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* narrow window: the resource list becomes a strip above the chart */
+.app-taskmanager .tm-shell[data-size="sm"] .tm-page-performance {
+  flex-direction: column;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-reslist {
+  flex-direction: row;
+  width: auto;
+  padding: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-right: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-res {
+  flex: 1 1 0;
+  align-items: flex-start;
+  min-width: 96px;
+  min-height: 0;
+  padding: 6px 8px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-res.active::before {
+  top: auto;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  width: auto;
+  height: 3px;
+  margin: 0;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-spark {
+  display: none;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-res-sub {
+  font-size: 11px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-detail {
+  gap: 10px;
+  padding: 10px 12px 12px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-dtitle {
+  font-size: 18px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-stat-v {
+  font-size: 17px;
+}
+
+.app-taskmanager .tm-shell[data-size="sm"] .tm-stats {
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+}

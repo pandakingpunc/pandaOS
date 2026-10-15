@@ -1,0 +1,942 @@
+/* Dosyalar (file manager). Everything is scoped under .app-files; colours come from theme.css tokens. */
+
+.app-files {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.app-files [hidden] {
+  display: none !important;
+}
+
+.app-files svg {
+  display: block;
+}
+
+/* ---------------------------------------------------------------- top row: navigation, address, search */
+.app-files .fm-top {
+  gap: 4px;
+  min-height: 50px;
+  padding: 9px 10px 5px;
+  border-bottom: 0;
+}
+
+.app-files .fm-nav {
+  flex: none;
+}
+
+.app-files .fm-address {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  gap: 4px;
+  min-width: 110px;
+  height: 32px;
+  margin: 0 4px;
+  padding: 0 4px 0 9px;
+  overflow: hidden;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 -1px 0 var(--border);
+  cursor: text;
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+
+.app-files .fm-address:hover {
+  border-color: var(--border-strong);
+}
+
+.app-files .fm-address.editing,
+.app-files .fm-address:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.app-files .fm-address.invalid {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 24%, transparent);
+}
+
+@keyframes fm-shake {
+  0%, 100% { transform: translateX(0); }
+  18% { transform: translateX(-7px); }
+  38% { transform: translateX(6px); }
+  58% { transform: translateX(-4px); }
+  78% { transform: translateX(3px); }
+}
+
+.app-files .fm-address.shake {
+  animation: fm-shake 420ms var(--ease);
+}
+
+.app-files .fm-address-ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+}
+
+.app-files .fm-address-ico svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-files .fm-crumbs {
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.app-files .fm-seg-group {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+.app-files .fm-crumb {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+  height: 24px;
+  margin: 0;
+  padding: 0 7px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  white-space: nowrap;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-files .fm-crumb:hover {
+  background: var(--bg-hover);
+}
+
+.app-files .fm-crumb:active {
+  background: var(--bg-active);
+}
+
+.app-files .fm-crumb.current {
+  font-weight: 600;
+}
+
+.app-files .fm-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  padding: 0;
+}
+
+.app-files .fm-more svg {
+  width: 16px;
+  height: 16px;
+}
+
+.app-files .fm-chev {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 18px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-files .fm-chev svg {
+  width: 12px;
+  height: 12px;
+}
+
+.app-files .fm-chev:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.app-files .fm-fill {
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-width: 10px;
+}
+
+.app-files .fm-addr-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0 4px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.app-files .fm-search {
+  position: relative;
+  flex: 0 1 232px;
+  min-width: 128px;
+}
+
+.app-files .fm-search-input {
+  width: 100%;
+  padding-left: 32px;
+  padding-right: 30px;
+}
+
+.app-files .fm-search-ico {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.app-files .fm-search-ico svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-files .fm-search-clear {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0;
+  padding: 0;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: default;
+}
+
+.app-files .fm-search-clear svg {
+  width: 13px;
+  height: 13px;
+}
+
+.app-files .fm-search-clear:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+/* ---------------------------------------------------------------- command bar */
+.app-files .fm-cmdbar {
+  gap: 2px;
+  min-height: 42px;
+  padding: 4px 10px 6px;
+  overflow: hidden;
+}
+
+.app-files .fm-cmd {
+  gap: 8px;
+  padding: 0 10px;
+  font-weight: 500;
+}
+
+.app-files .fm-cmd > svg {
+  width: 17px;
+  height: 17px;
+}
+
+.app-files .fm-cmd-chev {
+  display: inline-flex;
+  margin-left: -2px;
+  color: var(--text-muted);
+}
+
+.app-files .fm-cmd-chev svg {
+  width: 12px;
+  height: 12px;
+}
+
+.app-files .fm-cmd.open {
+  background: var(--bg-active);
+}
+
+.app-files .fm-cmd-danger {
+  color: color-mix(in srgb, var(--danger) 72%, var(--text));
+}
+
+.app-files .fm-cmdbar .fm-cmd-sep {
+  align-self: center;
+  height: 20px;
+  margin: 0 6px;
+}
+
+.app-files.fm-narrow .fm-cmd.sec .fm-cmd-label,
+.app-files.fm-tiny .fm-cmd .fm-cmd-label {
+  display: none;
+}
+
+.app-files.fm-narrow .fm-cmd.sec,
+.app-files.fm-tiny .fm-cmd {
+  padding: 0;
+  min-width: 32px;
+}
+
+.app-files.fm-tiny .fm-cmd[data-cmd="new"],
+.app-files.fm-tiny .fm-cmd[data-cmd="sort"],
+.app-files.fm-tiny .fm-cmd[data-cmd="view"] {
+  padding: 0 8px;
+}
+
+.app-files.fm-tiny .fm-search {
+  flex-basis: 150px;
+  min-width: 108px;
+}
+
+/* ---------------------------------------------------------------- main area */
+.app-files .fm-main {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  border-top: 1px solid var(--border);
+}
+
+.app-files .fm-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg);
+}
+
+/* ---------------------------------------------------------------- sidebar */
+.app-files .fm-side {
+  width: 206px;
+  padding: 4px 8px 8px;
+  gap: 0;
+}
+
+.app-files .fm-side-group {
+  padding: 12px 10px 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: var(--text-muted);
+}
+
+.app-files .fm-side .p-list {
+  gap: 1px;
+}
+
+.app-files .fm-side .p-list-item {
+  width: 100%;
+  min-height: 34px;
+  padding: 0 10px;
+  gap: 12px;
+  font: inherit;
+  font-size: 13px;
+}
+
+.app-files .fm-side-ico {
+  display: inline-flex;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transition: color var(--dur-fast) ease;
+}
+
+.app-files .fm-side-ico svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-files .fm-side-item.selected .fm-side-ico {
+  color: var(--accent-text);
+}
+
+.app-files .fm-side-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-files .fm-side-item.selected .fm-side-label {
+  font-weight: 600;
+}
+
+.app-files .fm-badge {
+  flex: none;
+  margin-left: auto;
+}
+
+.app-files .fm-side-sep {
+  margin: 8px 6px;
+}
+
+.app-files.fm-compact .fm-side {
+  width: 52px;
+  padding: 6px;
+}
+
+.app-files.fm-compact .fm-side-group {
+  height: 1px;
+  margin: 8px 6px;
+  padding: 0;
+  overflow: hidden;
+  background: var(--border);
+}
+
+.app-files.fm-compact .fm-side-group:first-child {
+  height: 0;
+  margin: 2px 0 0;
+  background: none;
+}
+
+.app-files.fm-compact .fm-side-group span {
+  display: none;
+}
+
+.app-files.fm-compact .fm-side .p-list-item {
+  justify-content: center;
+  padding: 0;
+}
+
+.app-files.fm-compact .fm-side-label {
+  display: none;
+}
+
+.app-files.fm-compact .fm-badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  font-size: 9.5px;
+}
+
+.app-files .fm-side-item.drop-target {
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* ---------------------------------------------------------------- file view */
+.app-files .fm-view {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  outline: none;
+}
+
+.app-files .fm-view:focus-visible {
+  outline: none;
+}
+
+.app-files .fm-view.drop-bg {
+  box-shadow: inset 0 0 0 2px var(--accent-border);
+}
+
+.app-files .fm-view[data-size="large"] {
+  --fm-cell: 124px;
+  --fm-icon: 72px;
+}
+
+.app-files .fm-view[data-size="medium"] {
+  --fm-cell: 96px;
+  --fm-icon: 44px;
+}
+
+.app-files .fm-view.is-empty {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-files .fm-empty {
+  flex: 1 1 auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app-files .fm-empty h3 {
+  margin: 4px 0 0;
+}
+
+.app-files .fm-band {
+  position: absolute;
+  z-index: 5;
+  box-sizing: border-box;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+}
+
+/* items (shared) */
+.app-files .fm-item {
+  position: relative;
+  min-width: 0;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 90ms ease, border-color 90ms ease;
+}
+
+.app-files .fm-item:hover {
+  background: var(--bg-hover);
+}
+
+.app-files .fm-item.selected {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.app-files .fm-item.selected:hover {
+  background: color-mix(in srgb, var(--accent) 29%, transparent);
+}
+
+.app-files .fm-view.kbd .fm-item.cursor {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-files .fm-item.is-hidden .fm-ico,
+.app-files .fm-item.is-hidden .fm-name {
+  opacity: .62;
+}
+
+.app-files .fm-item.cut .fm-ico,
+.app-files .fm-item.cut .fm-name {
+  opacity: .45;
+}
+
+.app-files .fm-view.is-dragging .fm-item.selected {
+  opacity: .55;
+}
+
+.app-files .fm-item.drop-target {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-files .fm-ico svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-files .fm-nm {
+  display: block;
+  min-width: 0;
+}
+
+/* icon grids */
+.app-files .fm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--fm-cell, 96px));
+  justify-content: start;
+  align-content: start;
+  gap: 2px;
+  padding: 12px;
+}
+
+.app-files .fm-grid .fm-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  /* uniform tiles (icon + two name lines); lets the browser skip layout / paint of off-screen tiles */
+  height: calc(var(--fm-icon) + 56px);
+  padding: 8px 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  content-visibility: auto;
+  contain-intrinsic-size: var(--fm-cell) calc(var(--fm-icon) + 56px);
+}
+
+.app-files .fm-grid .fm-item.selected {
+  border-color: var(--accent-border);
+}
+
+.app-files .fm-grid .fm-ico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--fm-icon);
+  height: var(--fm-icon);
+}
+
+.app-files .fm-thumb {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  background: var(--bg-elev);
+  box-shadow: 0 0 0 1px var(--border-strong), 0 2px 6px rgba(0, 0, 0, .3);
+  pointer-events: none;
+}
+
+.app-files .fm-grid .fm-name {
+  width: 100%;
+  font-size: 12.5px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.app-files .fm-grid .fm-nm {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  padding: 0 2px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* details list */
+.app-files .fm-details {
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+.app-files .fm-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: var(--fm-cols);
+  align-items: stretch;
+  height: 32px;
+  padding: 0 8px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-files .fm-col {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  white-space: nowrap;
+  cursor: default;
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.app-files .fm-col:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.app-files .fm-col.sorted {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.app-files .fm-col.right {
+  justify-content: flex-end;
+}
+
+.app-files .fm-col-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-files .fm-sort-arrow {
+  display: inline-flex;
+  flex: none;
+  color: var(--accent-text);
+}
+
+.app-files .fm-sort-arrow svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.4;
+}
+
+.app-files .fm-grip {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  bottom: 0;
+  z-index: 2;
+  width: 9px;
+  cursor: col-resize;
+}
+
+.app-files .fm-grip::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--border-strong);
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-files .fm-grip:hover::after {
+  background: var(--accent);
+}
+
+.app-files .fm-row {
+  display: grid;
+  grid-template-columns: var(--fm-cols);
+  align-items: center;
+  height: 34px;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 34px;
+  margin: 0 4px;
+  padding: 0 4px;
+  border-radius: 6px;
+}
+
+.app-files .fm-cell {
+  min-width: 0;
+  padding: 0 10px;
+  overflow: hidden;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-files .fm-cell.right {
+  text-align: right;
+}
+
+.app-files .fm-c-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 6px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.app-files .fm-row .fm-ico {
+  display: inline-flex;
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+.app-files .fm-row .fm-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-files .fm-row .fm-nm {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------------------------------------------------------------- inline rename */
+.app-files .fm-rename {
+  box-sizing: border-box;
+  display: block;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  box-shadow: var(--shadow), 0 0 0 3px var(--accent-soft);
+  outline: none;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.app-files .fm-rename::selection {
+  background: var(--selection);
+}
+
+.app-files .fm-rename.invalid {
+  border-color: var(--danger);
+  box-shadow: var(--shadow), 0 0 0 3px color-mix(in srgb, var(--danger) 26%, transparent);
+}
+
+.app-files .fm-item.renaming .fm-name {
+  display: none;
+}
+
+.app-files .fm-grid .fm-rename {
+  width: calc(100% + 8px);
+  min-height: 24px;
+  margin: 0 -4px;
+  padding: 2px 4px;
+  font-size: 12.5px;
+  line-height: 1.3;
+  text-align: center;
+  resize: none;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.app-files .fm-row .fm-rename {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 26px;
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+/* ---------------------------------------------------------------- status bar */
+.app-files .fm-status {
+  height: 32px;
+  padding: 0 10px 0 16px;
+  gap: 12px;
+}
+
+.app-files .fm-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-files .fm-seg {
+  padding: 2px;
+}
+
+.app-files .fm-seg > button {
+  min-width: 28px;
+  height: 22px;
+  padding: 0 6px;
+}
+
+.app-files .fm-seg > button:disabled {
+  opacity: .35;
+}
+
+/* ---------------------------------------------------------------- drag image (lives on <body>, off screen) */
+.app-files.fm-ghost {
+  position: fixed;
+  left: -1400px;
+  top: -1400px;
+  z-index: -1;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  background: transparent;
+}
+
+.app-files .fm-ghost-ico {
+  width: 48px;
+  height: 48px;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .4));
+}
+
+.app-files .fm-ghost-ico svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-files .fm-ghost-badge {
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  border-radius: 11px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
+}
+
+/* ---------------------------------------------------------------- search hits */
+.app-files .fm-hit {
+  padding: 0;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: transparent;
+}
+
+/* ---------------------------------------------------------------- short windows: tighter chrome */
+.app-files.fm-short .fm-top {
+  min-height: 42px;
+  padding: 6px 10px 2px;
+}
+
+.app-files.fm-short .fm-cmdbar {
+  min-height: 36px;
+  padding: 2px 10px 4px;
+}
+
+.app-files.fm-short .fm-status {
+  height: 28px;
+}
+
+.app-files.fm-short .fm-side {
+  padding-top: 2px;
+}
+
+.app-files.fm-short .fm-side-group {
+  padding-top: 8px;
+}
+
+.app-files.fm-short .fm-side .p-list-item {
+  min-height: 30px;
+}
+
+.app-files.fm-short .fm-row {
+  height: 30px;
+  contain-intrinsic-size: auto 30px;
+}
+
+.app-files.fm-short .fm-head {
+  height: 28px;
+}
+
+/* the sidebar scrolls instead of squeezing its rows (short windows) */
+.app-files .fm-side > * {
+  flex: none;
+}

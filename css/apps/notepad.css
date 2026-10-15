@@ -1,0 +1,710 @@
+/* Not Defteri — everything is scoped under .app-notepad (the window body). Theme variables only. */
+
+.app-notepad {
+  position: relative;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.app-notepad [hidden] {
+  display: none !important;
+}
+
+.app-notepad .np-root {
+  --np-fs: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg);
+}
+
+/* headless captures never advance animations: make everything final immediately (?fast=1) */
+.app-notepad .np-fast *,
+.app-notepad .np-fast *::before,
+.app-notepad .np-fast ~ .np-sheet,
+.app-notepad .np-fast ~ .np-sheet * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ---------------------------------------------------------------- menu bar */
+.app-notepad .np-menubar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 2px;
+  min-width: 0;
+  height: 36px;
+  padding: 0 6px;
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app-notepad .np-menu-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+  height: 28px;
+  margin: 0;
+  padding: 0 11px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: default;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.app-notepad .np-menu-btn:hover {
+  background: var(--bg-hover);
+}
+
+.app-notepad .np-menu-btn.open,
+.app-notepad .np-menu-btn:active {
+  background: var(--bg-active);
+}
+
+.app-notepad .np-menu-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.app-notepad .np-menubar-gap {
+  flex: 1 1 0;
+  min-width: 8px;
+}
+
+.app-notepad .np-path {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 62%;
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-notepad .np-md-toggle {
+  flex: none;
+}
+
+.app-notepad .np-compact .np-path {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- notice bar */
+.app-notepad .np-notice {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  min-width: 0;
+  padding: 6px 8px 6px 12px;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--text);
+  background: color-mix(in srgb, var(--warning) 15%, var(--bg-elev));
+  border-bottom: 1px solid color-mix(in srgb, var(--warning) 38%, var(--border));
+}
+
+.app-notepad .np-notice-icon {
+  display: flex;
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.app-notepad .np-notice-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-notepad .np-notice-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-notepad .np-notice .p-btn {
+  flex: none;
+}
+
+.app-notepad .np-notice-x {
+  margin-left: -2px;
+}
+
+/* ---------------------------------------------------------------- main area */
+.app-notepad .np-main {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.app-notepad .np-main.np-stack {
+  flex-direction: column;
+}
+
+.app-notepad .np-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+@keyframes np-slide-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------------------------------------------------------------- find & replace bar */
+.app-notepad .np-find {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app-notepad .np-find:not([hidden]),
+.app-notepad .np-notice:not([hidden]) {
+  animation: np-slide-in 150ms var(--ease-out) backwards;
+}
+
+.app-notepad .np-find-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.app-notepad .np-find-input,
+.app-notepad .np-replace-input {
+  flex: 1 1 120px;
+  min-width: 0;
+  margin: 0 2px;
+}
+
+.app-notepad .np-find-pad {
+  flex: none;
+  width: 26px;
+}
+
+.app-notepad .np-find-count {
+  flex: none;
+  min-width: 58px;
+  padding: 0 4px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.app-notepad .np-find-toggle svg {
+  transition: transform var(--dur-fast) ease;
+}
+
+.app-notepad .np-case {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+}
+
+.app-notepad .np-replace-row .p-btn {
+  flex: none;
+}
+
+.app-notepad .np-tiny .np-find-count {
+  min-width: 48px;
+}
+
+/* ---------------------------------------------------------------- editor */
+.app-notepad .np-edwrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* editor, highlight layer and measuring layer must lay text out identically */
+.app-notepad .np-editor,
+.app-notepad .np-hl,
+.app-notepad .np-measure {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 12px 16px;
+  border: 0;
+  font-family: var(--font-ui);
+  font-size: var(--np-fs);
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0;
+  word-spacing: 0;
+  text-indent: 0;
+  text-align: left;
+  tab-size: 4;
+  -moz-tab-size: 4;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  font-variant-ligatures: none;
+}
+
+.app-notepad .np-root.np-mono .np-editor,
+.app-notepad .np-root.np-mono .np-hl,
+.app-notepad .np-root.np-mono .np-measure {
+  font-family: var(--font-mono);
+  line-height: 1.6;
+}
+
+.app-notepad .np-root.np-nowrap .np-editor,
+.app-notepad .np-root.np-nowrap .np-hl,
+.app-notepad .np-root.np-nowrap .np-measure {
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+.app-notepad .np-editor {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  overflow: auto;
+  color: var(--text);
+  caret-color: var(--accent);
+  background: transparent;
+  border-radius: 0;
+  outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.app-notepad .np-editor:focus,
+.app-notepad .np-editor:focus-visible {
+  outline: none;
+}
+
+.app-notepad .np-editor::placeholder {
+  font-family: var(--font-ui);
+  color: var(--text-faint);
+  opacity: 1;
+}
+
+.app-notepad .np-hl {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  color: transparent;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app-notepad .np-hl mark {
+  color: transparent;
+  background: color-mix(in srgb, var(--warning) 26%, transparent);
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--warning) 32%, transparent);
+}
+
+.app-notepad .np-hl mark.cur {
+  background: color-mix(in srgb, var(--warning) 52%, transparent);
+  box-shadow: 0 0 0 1.5px var(--warning);
+}
+
+.app-notepad .np-measure {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.app-notepad .np-drop .np-edwrap::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  z-index: 3;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent-softer);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- markdown preview */
+.app-notepad .np-preview {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px 22px 24px;
+  overflow: auto;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.app-notepad .np-preview:empty::before {
+  content: "Önizlenecek içerik yok";
+  font-style: italic;
+  color: var(--text-faint);
+}
+
+.app-notepad .np-main.np-stack .np-preview {
+  border-left: 0;
+  border-top: 1px solid var(--border);
+}
+
+.app-notepad .np-preview > :first-child {
+  margin-top: 0;
+}
+
+.app-notepad .np-preview h1,
+.app-notepad .np-preview h2,
+.app-notepad .np-preview h3,
+.app-notepad .np-preview h4,
+.app-notepad .np-preview h5,
+.app-notepad .np-preview h6 {
+  margin: 1.3em 0 .5em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.app-notepad .np-preview h1 { font-size: 1.85em; padding-bottom: .25em; border-bottom: 1px solid var(--border); }
+.app-notepad .np-preview h2 { font-size: 1.45em; padding-bottom: .2em; border-bottom: 1px solid var(--border); }
+.app-notepad .np-preview h3 { font-size: 1.2em; }
+.app-notepad .np-preview h4 { font-size: 1.05em; }
+.app-notepad .np-preview h5 { font-size: .95em; }
+.app-notepad .np-preview h6 { font-size: .9em; color: var(--text-muted); }
+
+.app-notepad .np-preview p,
+.app-notepad .np-preview ul,
+.app-notepad .np-preview ol,
+.app-notepad .np-preview pre,
+.app-notepad .np-preview blockquote,
+.app-notepad .np-preview .np-md-table {
+  margin: 0 0 .85em;
+}
+
+.app-notepad .np-preview ul,
+.app-notepad .np-preview ol {
+  padding-left: 1.6em;
+}
+
+.app-notepad .np-preview li {
+  margin: .15em 0;
+}
+
+.app-notepad .np-preview li > ul,
+.app-notepad .np-preview li > ol {
+  margin: .15em 0 .15em;
+}
+
+.app-notepad .np-preview li.np-task {
+  list-style: none;
+  margin-left: -1.3em;
+}
+
+.app-notepad .np-preview li.np-task > ul,
+.app-notepad .np-preview li.np-task > ol {
+  margin-left: 1.5em;
+}
+
+.app-notepad .np-md-check {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin: 0 8px -2px 0;
+  border: 1.5px solid color-mix(in srgb, var(--text) 50%, transparent);
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+
+.app-notepad .np-md-check.on {
+  background: var(--accent-solid) center / 10px 10px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.4 6.4 4.9 8.9 9.6 3.4' fill='none' stroke='white' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border-color: var(--accent-solid);
+}
+
+.app-notepad .np-preview code {
+  padding: .12em .4em;
+  font-family: var(--font-mono);
+  font-size: .9em;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+.app-notepad .np-preview pre {
+  padding: 12px 14px;
+  overflow: auto;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.app-notepad .np-preview pre code {
+  padding: 0;
+  font-size: .88em;
+  line-height: 1.55;
+  white-space: pre;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+.app-notepad .np-preview blockquote {
+  padding: .1em 1em;
+  color: var(--text-muted);
+  border-left: 3px solid var(--accent);
+  background: var(--accent-softer);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.app-notepad .np-preview blockquote > :last-child {
+  margin-bottom: .4em;
+}
+
+.app-notepad .np-preview hr {
+  height: 1px;
+  margin: 1.2em 0;
+  border: 0;
+  background: var(--border-strong);
+}
+
+.app-notepad .np-md-link {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-text) 45%, transparent);
+  text-underline-offset: 2px;
+}
+
+.app-notepad .np-md-img {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.app-notepad .np-preview del {
+  color: var(--text-muted);
+}
+
+.app-notepad .np-md-table {
+  overflow-x: auto;
+}
+
+.app-notepad .np-preview table {
+  border-collapse: collapse;
+  font-size: .95em;
+}
+
+.app-notepad .np-preview th,
+.app-notepad .np-preview td {
+  padding: 6px 12px;
+  text-align: left;
+  border: 1px solid var(--border-strong);
+}
+
+.app-notepad .np-preview th {
+  font-weight: 600;
+  background: var(--bg-elev);
+}
+
+.app-notepad .np-preview tbody tr:nth-child(even) td {
+  background: var(--bg-elev);
+}
+
+/* ---------------------------------------------------------------- status bar */
+.app-notepad .np-status {
+  gap: 12px;
+  padding: 0 8px 0 14px;
+}
+
+.app-notepad .np-st-sep {
+  flex: none;
+  width: 1px;
+  height: 12px;
+  background: var(--border-strong);
+}
+
+.app-notepad .np-st-pos,
+.app-notepad .np-st-chars,
+.app-notepad .np-st-enc {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-notepad .np-st-flash {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--accent-text);
+  opacity: 0;
+  transition: opacity var(--dur) ease;
+}
+
+.app-notepad .np-st-flash.show {
+  opacity: 1;
+}
+
+.app-notepad .np-st-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+  height: 20px;
+  margin: 0;
+  padding: 0 6px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: default;
+  font-variant-numeric: tabular-nums;
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+.app-notepad .np-st-btn:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.app-notepad .np-st-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+}
+
+.app-notepad .np-tiny .np-st-flash,
+.app-notepad .np-tiny .np-st-enc,
+.app-notepad .np-tiny .np-st-sep-enc {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- "save changes?" sheet */
+@keyframes np-sheet-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes np-sheet-pop {
+  from { opacity: 0; transform: translateY(10px) scale(.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.app-notepad .np-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--overlay);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: np-sheet-fade var(--dur) ease both;
+}
+
+.app-notepad .np-sheet-card {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popup);
+  outline: none;
+  animation: np-sheet-pop 240ms var(--ease-out) backwards;
+}
+
+.app-notepad .np-sheet-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 20px 18px;
+  overflow: auto;
+}
+
+.app-notepad .np-sheet-icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+}
+
+.app-notepad .np-sheet-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-notepad .np-sheet-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-notepad .np-sheet-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.app-notepad .np-sheet-msg {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--text) 82%, transparent);
+  overflow-wrap: anywhere;
+}
+
+.app-notepad .np-sheet-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-sunken);
+  border-top: 1px solid var(--border);
+}
+
+.app-notepad .np-sheet-btn {
+  min-width: 84px;
+}
+
+@media (max-width: 460px) {
+  .app-notepad .np-sheet-foot {
+    flex-wrap: wrap;
+  }
+}

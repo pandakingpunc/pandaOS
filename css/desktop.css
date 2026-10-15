@@ -1,0 +1,405 @@
+/* PandaOS desktop — wallpaper layers and the icon grid (js/shell/desktop.js). Prefix: desk- */
+
+#desktop {
+  overflow: hidden;
+  outline: none;
+  background: #0b1210;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- wallpaper ---------- */
+.desk-wallpaper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.desk-wall {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  /* own compositor layer: the (filter-heavy) scene is rasterized once, even while glass windows move above it */
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.desk-wall.fade-in {
+  animation: desk-wall-in 700ms var(--ease) both;
+}
+
+@keyframes desk-wall-in {
+  from { opacity: 0; transform: translateZ(0) scale(1.025); }
+  to { opacity: 1; transform: translateZ(0) scale(1); }
+}
+
+/* ---------- icon grid ---------- */
+.desk-icons {
+  position: absolute;
+  inset: 0 0 var(--taskbar-height) 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* more entries than visible columns (js: syncScroll): the area scrolls sideways so no icon is lost off-screen */
+.desk-icons.desk-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  pointer-events: auto; /* the scrollbar of a pointer-events:none box cannot be dragged */
+}
+
+.desk-sizer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 1px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.desk-hide-icons .desk-icons {
+  display: none;
+}
+
+.desk-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transition: transform 260ms var(--ease-out);
+  will-change: transform;
+}
+
+.desk-icon.desk-nt {
+  transition: none;
+}
+
+.desk-icon.selected,
+.desk-icon.drop-target,
+.desk-icon.renaming {
+  z-index: 3;
+}
+
+.desk-inner {
+  pointer-events: auto;
+  box-sizing: border-box;
+  width: calc(100% - 10px);
+  margin-top: 3px;
+  padding: 7px 3px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: element;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+
+.desk-inner:hover {
+  background: rgba(255, 255, 255, .13);
+  border-color: rgba(255, 255, 255, .16);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.desk-icon.selected .desk-inner {
+  background: color-mix(in srgb, var(--accent) 36%, rgba(255, 255, 255, .06));
+  border-color: var(--accent-border);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.desk-icon.selected .desk-inner:hover {
+  background: color-mix(in srgb, var(--accent) 44%, rgba(255, 255, 255, .08));
+}
+
+.desk-kbd .desk-icon.cursor .desk-inner {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.desk-icon.drop-target .desk-inner {
+  background: color-mix(in srgb, var(--accent) 46%, rgba(255, 255, 255, .1));
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.desk-img {
+  flex: none;
+  width: var(--desk-icon, 48px);
+  height: var(--desk-icon, 48px);
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .38));
+  transition: transform var(--dur) var(--ease-out), opacity var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+.desk-img svg {
+  width: 100%;
+  height: 100%;
+}
+
+.desk-inner:hover .desk-img {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.desk-inner:active .desk-img {
+  transform: scale(.95);
+}
+
+.desk-img.desk-swap {
+  animation: desk-swap 460ms var(--ease-out);
+}
+
+@keyframes desk-swap {
+  0% { transform: scale(.78); }
+  55% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+.desk-icon.cut .desk-img,
+.desk-icon.cut .desk-label {
+  opacity: .5;
+}
+
+.desk-label {
+  max-width: 100%;
+  pointer-events: none;
+}
+
+.desk-label-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 1.28;
+  font-weight: 500;
+  letter-spacing: .005em;
+  color: #fff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, .85), 0 1px 3px rgba(0, 0, 0, .75), 0 2px 10px rgba(0, 0, 0, .5);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+[data-icon-size="large"] .desk-label-text {
+  font-size: 13px;
+}
+
+[data-icon-size="small"] .desk-label-text {
+  font-size: 11.5px;
+}
+
+.desk-icon.selected .desk-label-text {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+
+/* dark-toned wallpapers with a pale sky behind the first icon column (ocean, mountains): shade the left edge a little
+   more so the white labels stay readable without a visible box behind them */
+[data-wall-bright] .desk-wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(4, 12, 24, .44) 0, rgba(4, 12, 24, .26) 150px, transparent 300px);
+  pointer-events: none;
+}
+
+[data-wall-bright] .desk-label-text {
+  text-shadow: 0 0 2px rgba(0, 0, 0, .9), 0 1px 3px rgba(0, 0, 0, .85), 0 2px 12px rgba(0, 0, 0, .6);
+}
+
+/* light wallpapers (pastel): dark labels keep contrast */
+[data-wall-tone="light"] .desk-label-text {
+  color: #14171d;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .6), 0 0 8px rgba(255, 255, 255, .55);
+}
+
+[data-wall-tone="light"] .desk-inner:hover {
+  background: rgba(255, 255, 255, .38);
+  border-color: rgba(255, 255, 255, .6);
+}
+
+[data-wall-tone="light"] .desk-img {
+  filter: drop-shadow(0 3px 5px rgba(40, 50, 80, .28));
+}
+
+/* new icon pops in */
+.desk-icon.desk-new .desk-inner {
+  animation: desk-pop 340ms var(--ease-out) both;
+}
+
+@keyframes desk-pop {
+  from { opacity: 0; transform: scale(.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* after unlocking: icons rise in one after another */
+.desk-welcome .desk-icon .desk-inner {
+  animation: desk-welcome 520ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 26ms + 60ms);
+}
+
+@keyframes desk-welcome {
+  from { opacity: 0; transform: translateY(10px) scale(.94); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- inline rename ---------- */
+.desk-rename {
+  display: block;
+  box-sizing: border-box;
+  width: calc(100% + 4px);
+  margin: -1px -2px -2px;
+  min-height: 1.6em;
+  padding: 2px 3px;
+  resize: none;
+  overflow: hidden;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.28;
+  text-align: center;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  box-shadow: var(--shadow), 0 0 0 3px var(--accent-soft);
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+  overflow-wrap: anywhere;
+  animation: desk-rename-in 140ms var(--ease-out) both;
+}
+
+.desk-rename::selection {
+  background: var(--selection);
+}
+
+.desk-icon.renaming .desk-label {
+  display: none;
+}
+
+@keyframes desk-rename-in {
+  from { opacity: 0; transform: scale(.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- rubber band & drop preview ---------- */
+.desk-band {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  pointer-events: none;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--accent) 85%, white);
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  border-radius: 3px;
+}
+
+.desk-snap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  pointer-events: none;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, .55);
+  background: rgba(255, 255, 255, .1);
+  transition: transform 90ms var(--ease-out);
+}
+
+.desk-snap[hidden],
+.desk-band[hidden] {
+  display: none;
+}
+
+.desk-dragging .desk-icon.selected {
+  opacity: .55;
+}
+
+/* ---------- drag image (lives on <body>, off screen) ---------- */
+.desk-ghost {
+  position: fixed;
+  left: -1400px;
+  top: -1400px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.desk-ghost .desk-ghost-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  padding: 7px 3px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 9px;
+  background: rgba(30, 34, 44, .55);
+}
+
+.desk-ghost .desk-ghost-card:not(:last-of-type) {
+  background: rgba(30, 34, 44, .82);
+}
+
+.desk-ghost .desk-ghost-card:not(:last-of-type) .desk-label {
+  visibility: hidden;
+}
+
+.desk-ghost .desk-img {
+  width: var(--desk-icon, 48px);
+  height: var(--desk-icon, 48px);
+  flex: none;
+}
+
+.desk-ghost .desk-img svg {
+  width: 100%;
+  height: 100%;
+}
+
+.desk-ghost .desk-label-text {
+  -webkit-line-clamp: 2;
+}
+
+.desk-ghost-badge {
+  position: absolute;
+  right: -2px;
+  top: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--on-accent);
+  background: var(--accent-solid);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-icon { transition: none; }
+}

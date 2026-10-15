@@ -1,0 +1,353 @@
+/* PandaOS window manager (C2). Windows live inside #windows (pointer-events: none) and
+   switch pointer-events back on for themselves. All colours come from theme.css tokens. */
+
+/* ------------------------------------------------------------------ window frame */
+.wm-window {
+  --wm-r: var(--radius);
+  --wm-edge: var(--border);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: transparent;
+  border-radius: var(--wm-r);
+  box-shadow: var(--shadow-window-inactive);
+  pointer-events: auto;
+  outline: none;
+  transform-origin: 50% 50%;
+  transition: box-shadow var(--dur) var(--ease);
+}
+
+[data-theme="light"] .wm-window {
+  --wm-edge: rgba(255, 255, 255, .7);
+}
+
+.wm-window:focus,
+.wm-window:focus-visible {
+  outline: none;
+}
+
+.wm-window.wm-focused {
+  box-shadow: var(--shadow-window);
+}
+
+/* crisp inner hairline drawn above the content (the 1px outer ring comes from --shadow-window) */
+.wm-window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--wm-edge);
+}
+
+.wm-window.wm-maximized {
+  --wm-r: 0px;
+  box-shadow: none;
+}
+
+/* half-screen windows sit flush against the screen edges: square corners, no wedges between neighbours */
+.wm-window.wm-snapped {
+  --wm-r: 0px;
+}
+
+.wm-window.wm-maximized::after {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ title bar */
+.wm-titlebar {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: var(--titlebar-height);
+  padding-left: 12px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--titlebar-bg) 93%, transparent);
+  -webkit-backdrop-filter: var(--blur-glass);
+  backdrop-filter: var(--blur-glass);
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--wm-r) var(--wm-r) 0 0;
+  touch-action: none;
+  cursor: default;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+/* inactive windows: solid, quieter bar */
+:where(.wm-window:not(.wm-focused)) > .wm-titlebar {
+  background: var(--titlebar-bg-inactive);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* accent wash used by win.flash() */
+.wm-titlebar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent);
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wm-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  transition: opacity var(--dur) var(--ease), filter var(--dur) var(--ease);
+}
+
+.wm-icon > svg,
+.wm-icon > .p-icon,
+.wm-icon > .p-icon > svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+:where(.wm-window:not(.wm-focused)) .wm-icon {
+  opacity: .72;
+  filter: saturate(.75);
+}
+
+.wm-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 9px;
+  padding-right: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+  transition: color var(--dur) var(--ease);
+}
+
+:where(.wm-window:not(.wm-focused)) .wm-title {
+  color: var(--titlebar-text-inactive);
+}
+
+/* ------------------------------------------------------------------ caption buttons */
+.wm-controls {
+  flex: none;
+  display: flex;
+  align-self: stretch;
+}
+
+.wm-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: default;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background-color var(--dur-fast) linear, color var(--dur-fast) linear;
+}
+
+.wm-btn svg {
+  display: block;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+}
+
+.wm-btn.wm-glyph-set svg {
+  width: 16px;
+  height: 16px;
+}
+
+:where(.wm-window:not(.wm-focused)) .wm-btn {
+  color: var(--titlebar-text-inactive);
+}
+
+.wm-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.wm-btn:active {
+  background: var(--bg-active);
+}
+
+.wm-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.wm-btn.wm-close {
+  border-top-right-radius: var(--wm-r);
+}
+
+.wm-btn.wm-close:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+.wm-btn.wm-close:active {
+  background: #f1707a;
+  color: #fff;
+}
+
+.wm-window.wm-no-min .wm-min,
+.wm-window.wm-no-max .wm-max {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ content */
+.wm-body {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--text);
+  background: var(--bg);
+  border-radius: 0 0 var(--wm-r) var(--wm-r);
+}
+
+/* ------------------------------------------------------------------ resize handles */
+.wm-h {
+  position: absolute;
+  z-index: 6;
+  touch-action: none;
+}
+
+.wm-h-n { top: -3px; left: 6px; right: 6px; height: 6px; cursor: ns-resize; }
+.wm-h-s { bottom: -3px; left: 6px; right: 6px; height: 6px; cursor: ns-resize; }
+.wm-h-e { right: -3px; top: 6px; bottom: 6px; width: 6px; cursor: ew-resize; }
+.wm-h-w { left: -3px; top: 6px; bottom: 6px; width: 6px; cursor: ew-resize; }
+.wm-h-ne { top: -6px; right: -6px; width: 12px; height: 12px; cursor: nesw-resize; }
+.wm-h-sw { bottom: -6px; left: -6px; width: 12px; height: 12px; cursor: nesw-resize; }
+.wm-h-nw { top: -6px; left: -6px; width: 12px; height: 12px; cursor: nwse-resize; }
+.wm-h-se { bottom: -6px; right: -6px; width: 12px; height: 12px; cursor: nwse-resize; }
+
+.wm-window.wm-maximized .wm-h,
+.wm-window.wm-nonresizable .wm-h {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ drag / resize in progress */
+body.wm-interacting {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body.wm-interacting,
+body.wm-interacting * {
+  cursor: var(--wm-cursor, default) !important;
+}
+
+/* canvases / iframes inside windows must not steal the pointer mid-gesture */
+body.wm-interacting .wm-body,
+body.wm-interacting .wm-body * {
+  pointer-events: none !important;
+}
+
+/* ------------------------------------------------------------------ snap preview */
+.wm-snap-preview {
+  position: absolute;
+  z-index: 100000;
+  box-sizing: border-box;
+  border-radius: calc(var(--radius) + 2px);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  border: 2px solid var(--accent-border);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent), 0 10px 36px color-mix(in srgb, var(--accent) 22%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    left 240ms var(--ease-out),
+    top 240ms var(--ease-out),
+    width 240ms var(--ease-out),
+    height 240ms var(--ease-out),
+    opacity 160ms ease-out;
+}
+
+.wm-snap-preview.wm-show {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ states / animations */
+/* ?fast=1 (tests, screenshots): no wm chrome motion at all. App content (.wm-body) is left alone
+   on purpose, apps may rely on their own animationend / transitionend events. */
+.wm-instant .wm-window,
+.wm-instant .wm-window::after,
+.wm-instant .wm-window > .wm-titlebar,
+.wm-instant .wm-window > .wm-titlebar *,
+.wm-instant .wm-window > .wm-titlebar::before,
+.wm-instant .wm-snap-preview {
+  transition: none !important;
+  animation: none !important;
+}
+
+.wm-window.wm-animating {
+  transition:
+    left 220ms var(--ease),
+    top 220ms var(--ease),
+    width 220ms var(--ease),
+    height 220ms var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+@keyframes wm-open {
+  from { opacity: 0; transform: scale(.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.wm-window.wm-opening {
+  animation: wm-open 180ms var(--ease-out) both;
+}
+
+.wm-window.wm-closing {
+  opacity: 0;
+  transform: scale(.95);
+  pointer-events: none;
+  transition: opacity 140ms ease-in, transform 150ms var(--ease-in);
+}
+
+.wm-window.wm-minimized,
+.wm-window.wm-minimized * {
+  visibility: hidden !important;
+}
+
+.wm-window.wm-minimized {
+  pointer-events: none !important;
+}
+
+@keyframes wm-flash-ring {
+  0%, 100% { box-shadow: var(--shadow-window-inactive); }
+  40% { box-shadow: 0 0 0 2px var(--accent), 0 0 24px 2px var(--accent-border), 0 10px 30px rgba(0, 0, 0, .4); }
+}
+
+@keyframes wm-flash-bar {
+  0%, 100% { opacity: 0; }
+  40% { opacity: .34; }
+}
+
+.wm-window.wm-flash {
+  animation: wm-flash-ring 560ms ease-in-out 3;
+}
+
+.wm-window.wm-flash > .wm-titlebar::before {
+  animation: wm-flash-bar 560ms ease-in-out 3;
+}
