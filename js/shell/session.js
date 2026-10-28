@@ -37,6 +37,7 @@
   const PANDA_FALLBACK = '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="10" fill="#111"/><circle cx="48" cy="16" r="10" fill="#111"/><circle cx="32" cy="36" r="24" fill="#fff" stroke="#111" stroke-width="3"/><ellipse cx="23" cy="34" rx="6" ry="8" fill="#111" transform="rotate(-20 23 34)"/><ellipse cx="41" cy="34" rx="6" ry="8" fill="#111" transform="rotate(20 41 34)"/><circle cx="24" cy="33" r="2" fill="#fff"/><circle cx="40" cy="33" r="2" fill="#fff"/><ellipse cx="32" cy="46" rx="4" ry="3" fill="#111"/></svg>';
   const AVATAR_FALLBACK = '<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="#4b6a62"/><circle cx="24" cy="19" r="8" fill="#e8f0ee"/><path d="M8 46c2-11 9-15 16-15s14 4 16 15z" fill="#e8f0ee"/></svg>';
   const POWER_FALLBACK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v9"/><path d="M6.4 6.6a8 8 0 1 0 11.2 0"/></svg>';
+  const PHONE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>';
 
   function playSound(name) {
     try { if (P.sound && typeof P.sound.play === 'function') P.sound.play(name); } catch (e) { /* ignore */ }
@@ -195,8 +196,11 @@
     const corner = el('div', { class: 'lock-corner' },
       el('div', { class: 'lock-status', html: `${iconMarkup('wifi')}${iconMarkup('battery')}` }),
       powerBtn, menu);
+    // bottom-left: switch to the PandamOS phone build (mobile/index.html)
+    const mobileLink = el('a', { class: 'lock-mobile', href: 'mobile/index.html', 'aria-label': 'Mobil sürüme geç (PandamOS)', html: PHONE_ICON },
+      el('span', { text: 'Mobil' }));
 
-    root.append(bg, shade, clockView, signView, corner);
+    root.append(bg, shade, clockView, signView, corner, mobileLink);
     lockEl.appendChild(root);
 
     ui = { root, bgImg, hm, ampm, date, input, go, form, signView, clockView, menu, powerBtn, restartBtn, shutdownBtn };
@@ -204,7 +208,7 @@
     // reveal the sign-in view on click
     root.addEventListener('click', (e) => {
       if (!locked || unlocking) return;
-      if (e.target.closest('.lock-corner')) return;
+      if (e.target.closest('.lock-corner, .lock-mobile')) return;
       if (view === 'clock') showSignin();
     });
     root.addEventListener('keydown', onLockKey);
@@ -278,7 +282,7 @@
       return;
     }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
-    const onPower = e.target.closest && e.target.closest('.lock-corner');
+    const onPower = e.target.closest && e.target.closest('.lock-corner, .lock-mobile');
     if (onPower) return;
     if (e.key === 'Enter' && e.target === ui.input) {
       e.preventDefault();

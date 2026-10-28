@@ -11,3 +11,6 @@ desktop.ini
 # Test çıktıları
 *.log
 node_modules/
+
+# Mobil sürümün ham arşivi (kaynağı mobile-src/ içinde)
+*.zip

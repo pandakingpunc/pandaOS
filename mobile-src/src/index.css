@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+html, body, #root { height: 100%; margin: 0; }
+body { font-family: "Segoe UI", Roboto, system-ui, sans-serif; background: #0b0b12; overflow: hidden; user-select: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+@keyframes appOpen { from { transform: scale(.85); opacity: 0; border-radius: 40px; } to { transform: scale(1); opacity: 1; } }
+.app-open { animation: appOpen .28s cubic-bezier(.2,.8,.2,1); }
+@keyframes fadeUp { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+.fade-up { animation: fadeUp .35s ease-out both; }
+@keyframes slideDown { from { transform: translateY(-100%); } to { transform: none; } }
+.slide-down { animation: slideDown .3s cubic-bezier(.2,.8,.2,1); }
+@keyframes pulseLogo { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+.pulse-logo { animation: pulseLogo 1.4s ease-in-out infinite; }
+@keyframes toastIn { from { transform: translate(-50%, -30px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+.toast-in { animation: toastIn .3s ease-out; }
+input[type=range] { accent-color: var(--accent); }

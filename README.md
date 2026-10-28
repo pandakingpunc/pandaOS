@@ -7,6 +7,19 @@ Kurulum yok, sunucu yok, internet yok: **`index.html` dosyasına çift tıkla.**
 
 Tüm dosyaların ve ayarların tarayıcının `localStorage` alanında saklanır; sayfayı kapatıp açsan da kalır.
 
+## 📱 PandamOS — mobil sürüm
+
+PandaOS'un telefon hali **PandamOS** (Panda Mobile OS) de bu depoda. Masaüstü kilit ekranının sol altındaki
+**Mobil** düğmesiyle geçersin; telefonun kilit ekranındaki **💻 Masaüstü** düğmesi seni geri getirir.
+Doğrudan açmak için: `mobile/index.html` ([canlı](https://pandakingpunc.github.io/pandaOS/mobile/)).
+
+Kilit ekranı, hızlı ayarlar, son uygulamalar, güç/ses tuşları ve 14 uygulama içerir (Telefon, Mesajlar, Kamera,
+Galeri, Müzik, Hava Durumu, Saat, Takvim, Notlar, Çizim, Yılan, Tarayıcı, Hesap Makinesi, Ayarlar).
+
+- Kaynak: `mobile-src/` (React + TypeScript + Vite + Tailwind)
+- Derlenmiş tek dosya: `mobile/index.html` (internetsiz, çift tıkla açılır)
+- Değişiklikten sonra yeniden derle: `cd mobile-src && npm ci && npm run build`
+
 ## Neler var?
 
 - **Açılış ekranı ve kilit ekranı** — saat, tarih, panda avatarı (şifre gerekmez, Enter yeter). `Ctrl+Alt+L` ile kilitle.
