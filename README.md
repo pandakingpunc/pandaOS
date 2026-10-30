@@ -59,3 +59,7 @@ bash tools/test.sh smoke,vfs,wm,desktop,taskbar,ui,icons,integration
 - Ekran görüntüsü: `bash tools/shot.sh /tmp/masaustu.png "fast=1&theme=light"`
 - Faydalı URL parametreleri: `?fast=1` (açılış/kilit ekranını atla), `?reset=1` (fabrika ayarları),
   `?open=terminal,files` (uygulamaları aç), `?theme=light`.
+
+## Lisans
+
+MIT — ayrıntı için [LICENSE](LICENSE). Kullanılan açık kaynak paketler kendi lisanslarıyla gelir (mobil sürüme gömülü React, clsx ve tailwind-merge de MIT).
